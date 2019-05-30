@@ -7,6 +7,9 @@ verify_ssl = true
 
 [packages]
 requests = "*"
+certifi = "*"
+chardet = "*"
+click = "*"
 
 [requires]
 python_version = "3.7"

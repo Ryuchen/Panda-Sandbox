@@ -6,28 +6,22 @@
 # @File : GuestManager.py
 # @Desc : We abandon the old agent, only adapt for new guest agent
 # ==================================================
-import datetime
 import io
-import json
-import logging
 import os
-import requests
-import socket
+import json
 import time
-import xmlrpclib
+import socket
 import zipfile
+import logging
+import requests
+import datetime
 
-from cuckoo.common.config import config, parse_options
-from cuckoo.common.constants import (
-    CUCKOO_GUEST_PORT, CUCKOO_GUEST_INIT, CUCKOO_GUEST_COMPLETED,
-    CUCKOO_GUEST_FAILED
-)
-from cuckoo.common.exceptions import (
+from common import config, parse_options
+from common import (
     CuckooGuestError, CuckooGuestCriticalTimeout
 )
-from cuckoo.common.utils import TimeoutServer
-from cuckoo.core.database import Database
-from cuckoo.misc import cwd
+from core import Database
+from misc import cwd
 
 log = logging.getLogger(__name__)
 db = Database()
@@ -95,11 +89,8 @@ class GuestManager(object):
     """This class represents the new Guest Manager. It operates on the new
     Cuckoo Agent which features a more abstract but more feature-rich API."""
 
-    def __init__(self, vmid, ipaddr, platform, task_id, analysis_manager):
-        self.vmid = vmid
-        self.ipaddr = ipaddr
-        self.port = CUCKOO_GUEST_PORT
-        self.platform = platform
+    def __init__(self, machine, task_id, analysis_manager):
+        self.machine = machine
         self.task_id = task_id
         self.analysis_manager = analysis_manager
         self.timeout = None
@@ -114,16 +105,16 @@ class GuestManager(object):
     def aux(self):
         return self.analysis_manager.aux
 
-    def get(self, method, *args, **kwargs):
+    def get(self, method, **kwargs):
         """Simple wrapper around requests.get()."""
         do_raise = kwargs.pop("do_raise", True)
-        url = "http://%s:%s%s" % (self.ipaddr, self.port, method)
+        url = "http://%s:%s%s" % (self.machine.addr, self.machine.port, method)
         session = requests.Session()
         session.trust_env = False
         session.proxies = None
 
         try:
-            r = session.get(url, *args, **kwargs)
+            r = session.get(url, **kwargs)
         except requests.ConnectionError:
             raise CuckooGuestError(
                 "Cuckoo Agent failed without error status, please try "
@@ -136,7 +127,7 @@ class GuestManager(object):
 
     def post(self, method, *args, **kwargs):
         """Simple wrapper around requests.post()."""
-        url = "http://%s:%s%s" % (self.ipaddr, self.port, method)
+        url = "http://%s:%s%s" % (self.machine.addr, self.machine.port, method)
         session = requests.Session()
         session.trust_env = False
         session.proxies = None
@@ -159,18 +150,18 @@ class GuestManager(object):
 
         while db.guest_get_status(self.task_id) == "starting":
             try:
-                socket.create_connection((self.ipaddr, self.port), 1).close()
+                socket.create_connection((self.machine.addr, self.machine.port), 1).close()
                 break
             except socket.timeout:
-                log.debug("%s: not ready yet", self.vmid)
+                log.debug("%s: not ready yet", self.machine.label)
             except socket.error:
-                log.debug("%s: not ready yet", self.vmid)
+                log.debug("%s: not ready yet", self.machine.label)
                 time.sleep(1)
 
             if time.time() > end:
                 raise CuckooGuestCriticalTimeout(
                     "Machine %s: the guest initialization hit the critical "
-                    "timeout, analysis aborted." % self.vmid
+                    "timeout, analysis aborted." % self.machine.label
                 )
 
     def query_environ(self):
@@ -192,22 +183,22 @@ class GuestManager(object):
             self.analyzer_path = r.json()["dirpath"]
 
     def determine_system_drive(self):
-        if self.platform == "windows":
+        if self.machine.platform == "windows":
             return "%s/" % self.environ["SYSTEMDRIVE"]
         return "/"
 
     def determine_temp_path(self):
-        if self.platform == "windows":
+        if self.machine.platform == "windows":
             return self.environ["TEMP"]
         return "/tmp"
 
     def upload_analyzer(self, monitor):
         """Upload the analyzer to the Virtual Machine."""
-        zip_data = analyzer_zipfile(self.platform, monitor)
+        zip_data = analyzer_zipfile(self.machine.platform, monitor)
 
         log.debug(
             "Uploading analyzer to guest (id=%s, ip=%s, monitor=%s, size=%d)",
-            self.vmid, self.ipaddr, monitor, len(zip_data)
+            self.machine.label, self.machine.addr, monitor, len(zip_data)
         )
 
         self.determine_analyzer_path()
@@ -218,9 +209,7 @@ class GuestManager(object):
 
     def add_config(self, options):
         """Upload the analysis.conf for this task to the Virtual Machine."""
-        config = [
-            "[analysis]",
-        ]
+        config = ["[analysis]", ]
         for key, value in options.items():
             # Encode datetime objects the way xmlrpc encodes them.
             if isinstance(value, datetime.datetime):
@@ -238,8 +227,7 @@ class GuestManager(object):
         @param options: the task options
         @param monitor: identifier of the monitor to be used.
         """
-        log.info("Starting analysis on guest (id=%s, ip=%s)",
-                 self.vmid, self.ipaddr)
+        log.info("Starting analysis on guest (id=%s, ip=%s)", self.machine.label, self.machine.addr)
 
         self.options = options
         self.timeout = options["timeout"] + config("cuckoo:timeouts:critical")
@@ -255,15 +243,6 @@ class GuestManager(object):
         # Check whether this is the new Agent or the old one (by looking at
         # the status code of the index page).
         r = self.get("/", do_raise=False)
-        if r.status_code == 501:
-            # log.info("Cuckoo 2.0 features a new Agent which is more "
-            #          "feature-rich. It is recommended to make new Virtual "
-            #          "Machines with the new Agent, but for now falling back "
-            #          "to backwards compatibility with the old agent.")
-            self.is_old = True
-            self.aux.callback("legacy_agent")
-            self.old.start_analysis(options, monitor)
-            return
 
         if r.status_code != 200:
             log.critical(
@@ -290,8 +269,7 @@ class GuestManager(object):
             db.guest_set_status(self.task_id, "failed")
             return
 
-        log.info("Guest is running Cuckoo Agent %s (id=%s, ip=%s)",
-                 version, self.vmid, self.ipaddr)
+        log.info("Guest is running Cuckoo Agent %s (id=%s, ip=%s)", version, self.machine.label, self.machine.addr)
 
         # Pin the Agent to our IP address so that it is not accessible by
         # other Virtual Machines etc.
@@ -313,9 +291,7 @@ class GuestManager(object):
         # If the target is a file, upload it to the guest.
         if options["category"] == "file" or options["category"] == "archive":
             data = {
-                "filepath": os.path.join(
-                    self.determine_temp_path(), options["file_name"]
-                ),
+                "filepath": os.path.join(self.determine_temp_path(), options["file_name"]),
             }
             files = {
                 "file": ("sample.bin", open(options["target"], "rb")),
@@ -339,21 +315,17 @@ class GuestManager(object):
             self.post("/execute", data=data)
 
     def wait_for_completion(self):
-        if self.is_old:
-            self.old.wait_for_completion()
-            return
-
         end = time.time() + self.timeout
 
         while db.guest_get_status(self.task_id) == "running":
-            log.debug("%s: analysis still processing", self.vmid)
+            log.debug("%s: analysis still processing", self.machine.label)
 
             time.sleep(1)
 
             # If the analysis hits the critical timeout, just return straight
             # away and try to recover the analysis results from the guest.
             if time.time() > end:
-                log.info("%s: end of analysis reached!", self.vmid)
+                log.info("%s: end of analysis reached!", self.machine.label)
                 return
 
             try:
@@ -366,18 +338,8 @@ class GuestManager(object):
                 continue
 
             if status["status"] == "complete":
-                log.info("%s: analysis completed successfully", self.vmid)
+                log.info("%s: analysis completed successfully", self.machine.label)
                 return
             elif status["status"] == "exception":
-                log.warning(
-                    "%s: analysis caught an exception\n%s",
-                    self.vmid, status["description"]
-                )
+                log.warning("%s: analysis caught an exception\n%s", self.machine.label, status["description"])
                 return
-
-    @property
-    def server(self):
-        """Currently the Physical machine manager is using GuestManager in
-        an incorrect way. This should be fixed up later but for now this
-        workaround will do."""
-        return self.old.server

@@ -6,7 +6,6 @@
 # @File : agent.py
 # @Desc :
 # ==================================================
-import io
 import os
 import re
 import sys
@@ -30,9 +29,6 @@ AGENT_VERSION = "1.0"
 AGENT_FEATURES = [
     "execpy", "pinning", "logs", "largefile", "unicodepath",
 ]
-
-sys.stdout = io.BytesIO()
-sys.stderr = io.BytesIO()
 
 
 class MiniHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -127,7 +123,7 @@ class MiniHTTPServer(object):
     def shutdown(self):
         # BaseServer also features a .shutdown() method, but you can't use
         # that from the same thread as that will deadlock the whole thing.
-        self.s._BaseServer__shutdown_request = True
+        self.s.shutdown()
 
 
 class jsonify(object):
@@ -141,7 +137,8 @@ class jsonify(object):
         pass
 
     def json(self):
-        return json.dumps(self.values)
+        message = json.dumps(self.values)
+        return message.encode('utf-8')
 
     def headers(self, obj):
         pass
@@ -448,7 +445,7 @@ def do_kill():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("host", nargs="?", default="127.0.0.1")  # By default we should use 0.0.0.0
-    parser.add_argument("port", nargs="?", default="8000")
+    parser.add_argument("port", nargs="?", default="8554")
     args = parser.parse_args()
 
     print("Starting Minimal HTTP Sever at #{0}:{1} ~~~".format(args.host, args.port), file=sys.__stdout__)
