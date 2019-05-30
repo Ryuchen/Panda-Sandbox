@@ -16,5 +16,6 @@
 #### TODO清单:
  * [x] 创建新的项目并创建第一次提交
  * [x] 迁移官方最新的 agent 脚本过来, 并将其改写为 Python3 的版本
+ * [ ] 迁移官方 Guest.py 脚本过来，并将其改写为 Python3 的版本
  * [ ] 构建基本任务调度框架结构(celery)
  * [ ] 构建基本的虚拟机调用程序(VMWare Fusion Pro base on MacOS)
