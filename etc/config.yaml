@@ -1,0 +1,482 @@
+###########################################################
+#                     HawkEye  Sandbox                    #
+###########################################################
+#
+# Sandbox Release Version
+version: 1.7.6
+
+
+# Sandbox Common Settings
+settings:
+  ## The running mode of the sandbox to filter file
+  ## 4: Cluster mode
+  ## 3: Verify mode
+  ## 2: Sandbox mode
+  ## 1: Live mode
+  mode: 1
+  #################### cluster mode ###################
+  master: False
+  server: 172.16.12.1
+  ## Enable creation of memory dump of the analysis machine before shutting
+  ## down. Even if turned off, this functionality can also be enabled at
+  ## submission. Currently available for: VirtualBox and libvirt modules (KVM).
+  memory_dump: False
+  ## To enable the procmon analyser running in the machine.
+  procmon_dump: False
+  ## The file operations by the malware in the machine.
+  dropped_files: True
+  ## When the timeout of an analysis is hit, the VM is just killed by default.
+  ## For some long-running setups it might be interesting to terminate the
+  ## monitored processes before killing the VM so that connections are closed.
+  terminate_processes: False
+  ## The platform of file support by sandbox, inspector depends on this to determine whether
+  ## to store this task in sandbox workflow, by default if it turn on the task will put into
+  ## queue in workflow, with no consumer it will block the inspector thread.
+  support:
+    linux: False
+    darwin: False
+    android: False
+    archive: True
+    browser: True
+    windows: True
+
+
+# Sandbox Logging Settings
+logging:
+  version: 1
+  disable_existing_loggers: False
+  formatters:
+    simple:
+      format: "%(asctime)s | %(levelname)s | %(message)s"
+    detail:
+      format: "%(asctime)s-[%(filename)s:%(lineno)s-%(levelname)s]: %(message)s"
+  handlers:
+    console:
+      class: logging.StreamHandler
+      level: DEBUG
+      formatter: detail
+      stream: ext://sys.stdout
+    sandbox:
+      class: logging.FileHandler
+      level: INFO
+      formatter: detail
+      filename: "/data1/logs/cluster/hawkeye.log"
+    backend:
+      class: logging.FileHandler
+      level: DEBUG
+      formatter: detail
+      filename: "/data1/logs/cluster/backend.log"
+    libvirt:
+      class: logging.FileHandler
+      level: ERROR
+      formatter: detail
+      filename: "/data1/logs/cluster/libvirt.log"
+    distribute:
+      class: logging.FileHandler
+      level: DEBUG
+      formatter: detail
+      filename: "/data1/logs/cluster/distribute.log"
+  loggers:
+    sandbox:
+      level: INFO
+      handlers: [sandbox]
+      propagate: False
+    backend:
+      level: INFO
+      handlers: [backend]
+      propagate: False
+    libvirt:
+      level: ERROR
+      handlers: [libvirt]
+      propagate: False
+    distribute:
+      level: DEBUG
+      handlers: [distribute]
+      propagate: False
+  roots:
+    level: ERROR
+    handlers: []
+
+
+# Sandbox Storage Settings
+storage:
+  ## The middle result and file storage path. Need High I/O of disk.
+  temporary: "/data0"
+  ## The final report storage path. Need the huge size of disk.
+  persistent: "/data1"
+  ## The file store in which file system of the machine. By default its the local file system,
+  ## but for the distribute we suggest it to be mongo gridfs to store analysis file and results.
+  ## LFS: local file system
+  ## GridFS: mongo-grid file system
+  fs: LFS
+  ## The extract file path by receiver message from redis
+  ## extract_path: "/data1/bds_extracted_files"
+  schedule:
+    ### Minimum amount of free space (in %) available before starting a new task.
+    ### This tries to avoid failing an analysis because the reports can't be written
+    ### due out-of-disk-space errors. Setting this value to 0 disables the check.
+    ### (Note: this feature is currently not supported under Windows.)
+    disk-space: 0.3
+    ### The clean left data by day schedule 3 month
+    store-days: 90
+    ### The one time to delete the task number, to make sure the storage data not be full.
+    delete-number: 10
+  delete:
+    temp_files: True
+    origin_file: True
+
+
+# Sandbox Backend Settings
+backend:
+  async:
+    enable: True
+    mode: TCPSocket
+    host: "127.0.0.1"
+    port: 7706
+  # This config it to display to readers for where the backend start mode and server path, not inflect the code.
+  bloom:
+    enable: True
+    mode: LocalSocket
+    path: socket/bloom.sock
+  intel:
+    enable: True
+    mode: LocalSocket
+    path: socket/intel.sock
+  # This config it to display to readers for where the backend start mode and server path, not inflect the code.
+  matrix:
+    enable: True
+    mode: LocalSocket
+    path: socket/matrix.sock
+  ## The Sandbox to receive the file path from local by restful communicate.
+  restful:
+    enable: True
+    mode: TCPSocket
+    host: "127.0.0.1"
+    port: 9377
+  ## The Sandbox to receive the file path from local by socket communicate.
+  service:
+    enable: True
+    mode: TCPSocket
+    host: "127.0.0.1"
+    port: 62042
+
+
+# Sandbox Database Settings
+database:
+  mysql:
+    ## The default database provide service host
+    host: "localhost"
+    ## The default database provide service port
+    port: 3306
+    ## Database connection timeout in seconds.
+    ## If empty, default is set to 60 seconds.
+    timeout: 60
+    ## The connect database name.
+    dbname: "sandbox"
+    ## The username of the database to auth.
+    username: "root"
+    ## The password of the database to auth.
+    password: "12345678*"
+    ## Specify the database connection string.
+    ## Examples, see documentation for more:
+    driver: mysqlconnector
+
+  mongodb:
+    ## The default database provide service host
+    host: "localhost"
+    ## The default database provide service port
+    port: 27017
+    ## The connect database name.
+    dbname: "hawkeye"
+    ## The username of the database to auth.
+    username: "root"
+    ## The password of the database to auth.
+    password: "12345678*"
+    ## Automatically delete large dict values that exceed mongos 16MB limitation
+    ## Note: This only deletes dict keys from data stored in MongoDB. You would
+    ## still get the full dataset if you parsed the results dict in another
+    ## reporting module or from the jsondump module.
+    fix_large_docs: True
+
+  redis:
+    ## The default database provide service host
+    host: "localhost"
+    ## The default database provide service port
+    port: 6379
+    ## The sandbox channel for manage tasks status in different stage.
+    channel:
+      extract: "filextract"
+      tasks: "sandbox-tasks"
+      report: "sandbox-report"
+      publish: "sandbox-publish"
+      event: "sandbox-event"
+      notice: "awesome_notice"
+
+  elasticsearch:
+    ## The default database provide service host
+    host: "elasticsearch"
+    ## The default database provide service port
+    port: 9200
+    # Elasticsearch connection timeout in seconds.
+    timeout: 60
+    ## The auth of the elasticsearch index search.
+    cert: ""
+    ## The default sandbox index name.
+    indices:
+      ai:
+        enable: True
+        index: "sandbox-matrix"
+      event:
+        enable: True
+        index: "sandbox-event"
+      analysis:
+        enable: True
+        index: "sandbox-analysis"
+
+  sqlite:
+    ## The Kaspersky Antivirus SQLite file settings.
+    kaspersky:
+      ## Database connection timeout in seconds.
+      ## If empty, default is set to 60 seconds.
+      timeout: 60
+      ## The sqlite file path.
+      path: "sqlite:////var/opt/kaspersky/kav4fs/db/event_storage/curr.db"
+
+
+# Sandbox Machine Settings
+machine:
+  ## The machine snapshot settings method.
+  ## save: Provide external image save of machine.
+  ## snapshot: Provide the snapshot of machine.
+  snapshot: save
+  ## The machine image settings
+  storage:
+    ### The image storage path
+    path: "/data0"
+    ### The external vm snapshot folder name.
+    snapshot: "vm_stat"
+  ## The vcpu set of the machine to binding with and the every node of the machine to spend number of the vcpu.
+  kernel:
+    vcpu: []
+    binds: 4
+  ## The timeouts of the machine running status.
+  timeouts:
+    ### Set the default analysis timeout expressed in seconds. This value will be
+    ### used to define after how many seconds the analysis will terminate unless
+    ### otherwise specified at submission.
+    default: 60
+    ### Set the critical timeout expressed in (relative!) seconds. It will be added
+    ### to the default timeout above and after this timeout is hit
+    ### Cuckoo will consider the analysis failed and it will shutdown the machine
+    ### no matter what. When this happens the analysis results will most likely
+    ### be lost.
+    critical: 60
+    ### Maximum time to wait for virtual machine status change. For example when
+    ### shutting down a vm. Default is 30 seconds.
+    vm_state: 60
+  resultserver:
+    host: "192.168.122.1"
+    port: 2042
+    ### Maximum size and Minimum size of uploaded files from VM (screenshots, dropped files, log)
+    ### The value is expressed in bytes, by default 40Mb
+    upload_min_size: 512
+    upload_max_size: 41943040
+  ## The virtual machine platform settings.
+  platform:
+    ### name: The images of virtual machines name.
+    ### count: The number of the each platform.
+    windows:
+      name: "windows.qcow2"
+      count: 10
+    android:
+      name: "android.qcow2"
+      count: 0
+    darwin:
+      name: "darwin.qcow2"
+      count: 0
+    linux:
+      name: "linux.qcow2"
+      count: 0
+
+
+# Sandbox Workers Settings
+# The section name of the worker is the process name.
+# The enable is the status of the worker to start or not.
+# The status is the Brain manager to check the worker is alive or not cycle time.
+workers:
+  ## The worker to receive task from redis channel.
+  Receiver:
+    enable: True
+    status: 5
+    pending: 20000
+    limit:
+      upsize: 4194304
+      downsize: 49152
+  ## The worker to receive task from redis channel.
+  Provider:
+    enable: True
+    status: 10
+  ## The worker to receive task from redis channel.
+  Inspector:
+    enable: True
+    status: 300
+  ## The worker to receive task from redis channel.
+  Browser:
+    enable: True
+    status: 5
+  ## The worker to receive task from redis channel.
+  Analyser:
+    enable: True
+    status: 30
+  ## The worker to receive task from redis channel.
+  Processor:
+    enable: True
+    status: 2
+    limit:
+      time: 600
+      memory: 2097152
+    level: 1
+    delete_bson: True
+    delete_drop: True
+    rsync_files: False
+  ## The worker to receive task from redis channel.
+  Publisher:
+    enable: True
+    status: 300
+    method:
+      redis: True
+      elasticsearch: False
+    message:
+      event: True
+      notice: True
+    delete_database: True
+  ## The worker to receive task from redis channel.
+  Sweeper:
+    enable: False
+    status: 300
+  ## The worker to receive task from redis channel.
+  Unpacker:
+    enable: True
+    status: 300
+    extension:
+      - "exe"
+      - "exe+"
+      - "doc"
+      - "docx"
+      - "xls"
+      - "xlsx"
+      - "ppt"
+      - "pptx"
+      - "pdf"
+      - "msi"
+      - "rtf"
+      - "python"
+      - "ps1"
+      - "inf"
+      - "rar"
+      - "zip"
+      - "7z"
+      - "tar"
+      - "gzip"
+      - "jar"
+      - "dll"
+      - "bin"
+      - "lnk"
+
+# Sandbox File Caching Settings
+caching:
+  exe: True
+  doc: True
+  ppt: True
+  xls: True
+  rtf: True
+  txt: True
+  pdf: True
+  hta: True
+  swf: True
+# Sandbox FileType Settings
+filetype:
+  windows:
+    enable: True
+    extension:
+      js: True
+      exe: True
+      doc: True
+      xls: True
+      ppt: True
+      pdf: True
+      msi: True
+      rtf: True
+      ps1: True
+      inf: True
+      zip: True
+      tar: True
+      jar: True
+      dll: True
+      bin: True
+      lnk: True
+      bat: True
+      cmd: True
+      com: True
+      cpl: True
+      dos: True
+      emf: True
+      gif: True
+      hlp: True
+      img: True
+      jpg: True
+      png: True
+      psi: True
+      swf: True
+      sys: True
+      vbs: True
+      wps: True
+      wsf: True
+      xar: True
+      xml: True
+      pptx: True
+      xlsx: True
+      docx: True
+      exe+: True
+      pacp: True
+      audio: True
+      video: True
+      python: True
+      generic: True
+  android:
+    enable: True
+    extension:
+      apk: True
+      dex: True
+  linux:
+    enable: True
+    extension:
+      shell: True
+      elf: True
+      deb: True
+      rpm: True
+      kernal: True
+      perl: True
+  browser:
+    enable: True
+    extension:
+      crx: True
+      htm: True
+      txt: True
+  archive:
+    enable: True
+    extension:
+      7z: True
+      lzh: True
+      rar: True
+      zip: True
+      eml: True
+      msg: True
+      ace: True
+      cab: True
+      bzip: True
+      gzip: True
+  darwin:
+    enable: True
+    extension:
+       mac: True

@@ -10,7 +10,7 @@
 Using this unittest to test agent.py function
 The function below was assemble from GuestManager
 
-Running this unittest before, you should starting agent on your develop sys.
+Running this unittest, before you should starting agent on your develop sys.
 """
 import os
 import sys

@@ -26,9 +26,7 @@ from http.server import BaseHTTPRequestHandler
 
 # We change this into 1.0, because we refactored code into Python3.
 AGENT_VERSION = "1.0"
-AGENT_FEATURES = [
-    "execpy", "pinning", "logs", "largefile", "unicodepath",
-]
+AGENT_FEATURES = ["execpy", "pinning", "logs", "largefile", "unicodepath"]
 
 
 class MiniHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -448,7 +446,6 @@ if __name__ == "__main__":
     parser.add_argument("port", nargs="?", default="8554")
     args = parser.parse_args()
 
-    print("Starting Minimal HTTP Sever at #{0}:{1} ~~~".format(args.host, args.port), file=sys.__stdout__)
+    print("Starting Minimal HTTP Sever at #{0}:{1} ~~~".format(args.host, args.port))
 
     app.run(host=args.host, port=int(args.port))
-
