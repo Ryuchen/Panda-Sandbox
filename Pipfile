@@ -11,6 +11,7 @@ certifi = "*"
 chardet = "*"
 click = "*"
 redis = "*"
+celery = "*"
 
 [requires]
 python_version = "3.7"
