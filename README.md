@@ -17,6 +17,7 @@
  * [x] 创建新的项目并创建第一次提交
  * [x] 迁移官方最新的 agent 脚本过来, 并将其改写为 Python3 的版本
  * [x] 测试改写后的 agent 脚本，使其功能可用
+ * [x] 完成基本测试的 VMware Fusion Pro base on MacOS 的基本调用测试
 
 #### TODO清单:
  * [ ] 迁移官方 Guest.py 脚本过来，并将其改写为 Python3 的版本
