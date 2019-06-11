@@ -32,7 +32,7 @@ class VMwareUnitTest(object):
         @raise CuckooMachineError: if snapshot not found
         """
         try:
-            p = subprocess.Popen([self.vmware.get("path"), "listSnapshots", self.vmx_path],
+            p = subprocess.Popen([self.vmware.get("path"), "-T", "ws", "listSnapshots", self.vmx_path],
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
             output, _ = p.communicate()
@@ -60,7 +60,7 @@ class VMwareUnitTest(object):
         """
         print("Revert snapshot for vm %s" % self.vmx_path)
         try:
-            if subprocess.call([self.vmware.get("path"), "revertToSnapshot", self.vmx_path, snapshot],
+            if subprocess.call([self.vmware.get("path"), "-T", "ws", "revertToSnapshot", self.vmx_path, snapshot],
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE):
                 print("Unable to revert snapshot for machine %s: vmrun exited with error" % self.vmx_path)
@@ -72,7 +72,7 @@ class VMwareUnitTest(object):
         @return: running status
         """
         try:
-            p = subprocess.Popen([self.vmware.get("path"), "list"],
+            p = subprocess.Popen([self.vmware.get("path"), "-T", "ws", "list"],
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
             output, error = p.communicate()
@@ -98,7 +98,7 @@ class VMwareUnitTest(object):
 
         print("Starting vm %s" % self.vmx_path)
         try:
-            p = subprocess.Popen([self.vmware.get("path"), "start", self.vmx_path, self.mode],
+            p = subprocess.Popen([self.vmware.get("path"), "-T", "ws", "start", self.vmx_path, self.mode],
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
             if self.mode.lower() == "gui":
@@ -113,7 +113,7 @@ class VMwareUnitTest(object):
         print("Stopping vm %s" % self.vmx_path)
         if self._is_running():
             try:
-                if subprocess.call([self.vmware.get("path"), "stop", self.vmx_path, "hard"],
+                if subprocess.call([self.vmware.get("path"), "-T", "ws", "stop", self.vmx_path, "hard"],
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE):
                     print("Error shutting down machine %s" % self.vmx_path)
@@ -122,10 +122,43 @@ class VMwareUnitTest(object):
         else:
             print("Trying to stop an already stopped machine: %s", self.vmx_path)
 
+    def create_snapshot(self, snapshot):
+        print("Starting vm %s" % self.vmx_path)
+        try:
+            p = subprocess.Popen([self.vmware.get("path"), "-T", "ws", "start", self.vmx_path, self.mode],
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE)
+            if self.mode.lower() == "gui":
+                output, _ = p.communicate()
+                output = output.decode("utf-8")
+                if output:
+                    print("Unable to start machine %s: %s" % (self.vmx_path, output))
+        except OSError as e:
+            print("Unable to start machine %s in %s mode: %s" % (self.vmx_path, self.mode.upper(), e))
+
+        print("Create vm %s snapshot" % self.vmx_path)
+        try:
+            p = subprocess.Popen([self.vmware.get("path"), "-T", "ws", "snapshot", self.vmx_path, snapshot],
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE)
+            output, _ = p.communicate()
+            output = output.decode("utf-8")
+            if output:
+                print("Create snapshot with machine %s: %s" % (self.vmx_path, output))
+        except OSError as e:
+            print("Unable to start machine %s in %s mode: %s" % (self.vmx_path, self.mode.upper(), e))
+
 
 if __name__ == '__main__':
-    vm = VMwareUnitTest(vmx_path="/Users/ryuchen/Virtual Machines.localized/Windows.vmwarevm/Windows.vmx")
+    vm = VMwareUnitTest(vmx_path="/Users/ryuchen/Virtual Machines.localized/Windows 7.vmwarevm/Windows 7.vmx")
     if vm.check_snapshot("snapshot-1"):
+        vm.start_machine("snapshot-1")
+
+        time.sleep(10)
+
+        vm.stop_machine()
+    else:
+        vm.create_snapshot("snapshot-1")
         vm.start_machine("snapshot-1")
 
         time.sleep(10)
