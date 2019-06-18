@@ -65,12 +65,12 @@ Contributions, issues and feature requests are welcome!<br />Feel free to check 
 
 ### ⭐ 渴望支持: 
 
-Give a ⭐️ if this project helped you!
-Please buy me a coffee!
+如果你想继续观察 Panda-Sandbox 接下来的走向，请给我们一个 ⭐ 这是对于我们最大的鼓励。
+此外，如果你觉得 Panda-Sandbox 对你有帮助，你可以赞助我们一杯咖啡，鼓励我们继续开发维护下去。
 
 | **微信**                         | **支付宝**                           |
 | ------------------------------- | ----------------------------------- |
-|<p align="center"><img src="https://github.com/Ryuchen/Panda-Sandbox/tree/master/sponsor/wechat.svg" alt="wechat" width="100"/></p>|<p align="center"><img src="https://github.com/Ryuchen/Panda-Sandbox/tree/master/sponsor/alipay.svg" alt="alipay" width="100"/></p>|
+|<p align="center">![扫码赞助](https://github.com/Ryuchen/Panda-Sandbox/raw/master/sponsor/wechat.jpg)</p>|<p align="center">![扫码赞助](https://github.com/Ryuchen/Panda-Sandbox/raw/master/sponsor/alipay.jpg)</p>|
 | ------------------------------- | ----------------------------------- |
 
 ### 📝 开源协议:
