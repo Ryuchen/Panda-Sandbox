@@ -64,11 +64,17 @@ Contributions, issues and feature requests are welcome!<br />Feel free to check 
 ### ⭐ 渴望支持: 
 
 Give a ⭐️ if this project helped you!
+Please buy me a coffee!
+
+| **微信**                         | **支付宝**                           |
+| ------------------------------- | ----------------------------------- |
+|<p align="center"><img src="https://github.com/Ryuchen/Panda-Sandbox/sponsor/wechat.png" alt="wechat" width="100"/></p>|<p align="center"><img src="https://github.com/Ryuchen/Panda-Sandbox/sponsor/alipay.png" alt="alipay" width="100"/></p>|
 
 ### 📝 开源协议:
 
 Copyright © 2019 [Ryuchen](https://github.com/Ryuchen).<br />
 This project is [GPL](http://www.gnu.org/licenses/gpl-3.0.html) licensed.
+请谨遵开源协议，谢谢使用！
 
 ***
 _This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
