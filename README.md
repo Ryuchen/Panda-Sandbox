@@ -1,6 +1,8 @@
 <h1 align="center">Welcome to Panda-Sandbox(钟馗沙箱)</h1>
-<p>
+<p align="center">
   <img src="https://img.shields.io/badge/version-v0.1-blue.svg?cacheSeconds=2592000" />
+  <img src="https://img.shields.io/badge/language-python3-blue.svg?cacheSeconds=2592000" />
+  <img src="https://img.shields.io/badge/platform-macos-blue.svg?cacheSeconds=2592000" />
   <a href="http://www.gnu.org/licenses/gpl-3.0.html">
     <img alt="License: GPL" src="https://img.shields.io/badge/License-GPL-yellow.svg" target="_blank" />
   </a>
@@ -68,7 +70,7 @@ Please buy me a coffee!
 
 | **微信**                         | **支付宝**                           |
 | ------------------------------- | ----------------------------------- |
-|<p align="center"><img src="https://github.com/Ryuchen/Panda-Sandbox/tree/master/sponsor/wechat.png" alt="wechat" width="100"/></p>|<p align="center"><img src="https://github.com/Ryuchen/Panda-Sandbox/tree/master/sponsor/alipay.png" alt="alipay" width="100"/></p>|
+|<p align="center"><img src="https://github.com/Ryuchen/Panda-Sandbox/tree/master/sponsor/wechat.svg" alt="wechat" width="100"/></p>|<p align="center"><img src="https://github.com/Ryuchen/Panda-Sandbox/tree/master/sponsor/alipay.svg" alt="alipay" width="100"/></p>|
 | ------------------------------- | ----------------------------------- |
 
 ### 📝 开源协议:
