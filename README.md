@@ -71,7 +71,6 @@ Contributions, issues and feature requests are welcome!<br />Feel free to check 
 | **微信**                         | **支付宝**                           |
 | ------------------------------- | ----------------------------------- |
 |<p align="center">![扫码赞助](https://github.com/Ryuchen/Panda-Sandbox/raw/master/sponsor/wechat.jpg)</p>|<p align="center">![扫码赞助](https://github.com/Ryuchen/Panda-Sandbox/raw/master/sponsor/alipay.jpg)</p>|
-| ------------------------------- | ----------------------------------- |
 
 ### 📝 开源协议:
 
