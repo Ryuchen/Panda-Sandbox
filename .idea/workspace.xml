@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9ad3e300-a5df-4a23-bc87-b2e400071308" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/sponsor/alipay.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sponsor/wechat.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -19,8 +16,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="786">
-                <caret line="76" column="13" selection-start-line="76" selection-start-column="13" selection-end-line="76" selection-end-column="13" />
+              <first_editor relative-caret-position="218">
+                <caret line="65" column="37" lean-forward="true" selection-start-line="65" selection-start-column="37" selection-end-line="65" selection-end-column="37" />
               </first_editor>
               <second_editor>
                 <markdownNavigatorState />
@@ -244,12 +241,12 @@
       <workItem from="1560328262223" duration="587000" />
       <workItem from="1560499944395" duration="270000" />
       <workItem from="1560501616054" duration="265000" />
-      <workItem from="1560822264876" duration="3108000" />
+      <workItem from="1560822264876" duration="3244000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="27945000" />
+    <option name="totallyTimeSpent" value="28081000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1080" extended-state="0" />
@@ -269,7 +266,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Regex Tester" order="10" />
-      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.49841145" weight="0.4920792" />
+      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.49841145" visible="true" weight="0.4920792" />
       <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.5015886" side_tool="true" weight="0.32178217" />
       <window_info anchor="bottom" id="Python Console" order="13" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -503,8 +500,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="786">
-            <caret line="76" column="13" selection-start-line="76" selection-start-column="13" selection-end-line="76" selection-end-column="13" />
+          <first_editor relative-caret-position="218">
+            <caret line="65" column="37" lean-forward="true" selection-start-line="65" selection-start-column="37" selection-end-line="65" selection-end-column="37" />
           </first_editor>
           <second_editor>
             <markdownNavigatorState />

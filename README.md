@@ -68,7 +68,8 @@ Please buy me a coffee!
 
 | **微信**                         | **支付宝**                           |
 | ------------------------------- | ----------------------------------- |
-|<p align="center"><img src="https://github.com/Ryuchen/Panda-Sandbox/sponsor/wechat.png" alt="wechat" width="100"/></p>|<p align="center"><img src="https://github.com/Ryuchen/Panda-Sandbox/sponsor/alipay.png" alt="alipay" width="100"/></p>|
+|<p align="center"><img src="https://github.com/Ryuchen/Panda-Sandbox/tree/master/sponsor/wechat.png" alt="wechat" width="100"/></p>|<p align="center"><img src="https://github.com/Ryuchen/Panda-Sandbox/tree/master/sponsor/alipay.png" alt="alipay" width="100"/></p>|
+| ------------------------------- | ----------------------------------- |
 
 ### 📝 开源协议:
 
