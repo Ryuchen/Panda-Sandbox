@@ -42,6 +42,10 @@
  * [ ] 构建基本任务调度框架结构(celery)
  * [ ] 构建基本的虚拟机调用程序(VMWare Fusion Pro base on MacOS)
  
+ 后续更新内容将采用 github 的看板功能进行维护
+ 
+ 地址: v1.0.0-alpha [Project 看板](https://github.com/Ryuchen/Panda-Sandbox/projects/1)
+ 
 ### 📖 安装说明:
 
 ```python
