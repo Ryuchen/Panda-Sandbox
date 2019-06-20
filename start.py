@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # ==================================================
-# @Time : 2019-05-27 23:55 
+# @Time : 2019-06-20 10:24
 # @Author : ryuchen
-# @Site :  
-# @File : start.py 
-# @Desc : 
+# @File : start.py.py
+# @Desc :
 # ==================================================
+
+from lib.celery import app
+
+
+app.start()
