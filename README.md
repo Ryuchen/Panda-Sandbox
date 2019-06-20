@@ -80,7 +80,7 @@ Contributions, issues and feature requests are welcome!<br />Feel free to check 
 ### 📝 开源协议:
 
 Copyright © 2019 [Ryuchen](https://github.com/Ryuchen).<br />
-This project is [GPL](http://www.gnu.org/licenses/gpl-3.0.html) licensed.
+This project is [MIT](https://github.com/Ryuchen/Panda-Sandbox/raw/master/LICENSE) licensed.
 请谨遵开源协议，谢谢使用！
 
 ***
