@@ -6,11 +6,7 @@
 # @File : celery.py
 # @Desc :
 # ==================================================
-import os
-import sys
 import logging
-import datetime
-import importlib
 
 from celery import Celery
 from celery.signals import task_prerun
@@ -23,16 +19,14 @@ log = logging.getLogger(__name__)
 
 # Once, as part of application setup, during deploy/migrations:
 # We need to setup the global default settings
-setting = Settings()
-setting.loading_settings()
-settings = setting.get_settings()
+settings = Settings.loading_settings()
 
 # Initialise the celery redis connection
 redis_host = settings.get("connection", {}).get("redis", {}).get("host", "localhost")
 redis_port = settings.get("connection", {}).get("redis", {}).get("port", 6379)
 
 app = Celery(
-    main='deadpool',
+    main='Panda-Sandbox',
     broker='redis://{0}:{1}/3'.format(redis_host, redis_port),
     backend='redis://{0}:{1}/4'.format(redis_host, redis_port)
 )
@@ -53,48 +47,19 @@ app.conf.update(
 # When celery start to initialise need to load multiple database session to context.
 @app.on_configure.connect
 def setup_initialise(sender, **kwargs):
-    try:
-        # Initialise database connection
-        databases_session_pool = {}
-        for _ in settings.get("connection").get("database").get("database"):
-            dsn = "mysql+mysqlconnector://{0}:{1}@{2}:{3}/{4}?charset=utf8"
-            username = settings.get("connection").get("database").get("username")
-            password = settings.get("connection").get("database").get("password")
-            host = settings.get("connection").get("database").get("host")
-            port = settings.get("connection").get("database").get("port")
-            db = MysqlBase(dsn.format(username, password, host, port, _))
-            databases_session_pool.update({_: db.Session})
-        setattr(sender, "databases_session_pool", databases_session_pool)
-        log.debug("successes celery app on configure")
-    except Exception as e:
-        log.error(e)
+    print("app initialise signals received: %s" % sender.name)
 
 
 # When celery after initialise we register our task into the celery.
 @app.on_after_configure.connect
 def setup_celery_tasks(sender, **kwargs):
-    sys.path.append(os.getcwd())
-    for task_name, task_option in settings.get("router", {}).items():
-        module_path = 'apps.{0}.tasks.{1}'.format(task_option.get("module"), task_name)
-        try:
-            ip_module = importlib.import_module(module_path)
-            ip_module_class = getattr(ip_module, task_option.get("class"))
-            ip_module_class.options = task_option.get("options")
-            task_instance = ip_module_class()
-            sender.register_task(task_instance)
-            log.debug("successes celery app on after configure")
-        except Exception as e:
-            log.error(e)
+    print("app after configure signals received: %s" % sender.name)
 
 
 # When celery start the task, we need to tell it the last time running status.
 @task_prerun.connect
 def search_agg_task_log(signal, sender, *args, **kwargs):
-    # This is to set this time running clock(super precision)
-    running_time = datetime.datetime.now().replace(second=0, microsecond=0)
-    sender.request.kwargs = {
-        "datetime": running_time
-    }
+    print("task prerun signals received: %s" % sender.name)
 
 
 @task_success.connect

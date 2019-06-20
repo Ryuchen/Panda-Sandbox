@@ -130,7 +130,7 @@ logging:
       format: "%(asctime)s-[%(filename)s:%(lineno)s-%(levelname)s]: %(message)s"
   handlers:
     console:
-      class: "lib.hawkeye.plugins.logger.ConsoleHandler.ConsoleHandler"
+      class: "lib.panda.plugins.logger.ConsoleHandler.ConsoleHandler"
       level: DEBUG
       formatter: detail
       stream: ext://sys.stdout
@@ -138,7 +138,7 @@ logging:
       class: logging.FileHandler
       level: INFO
       formatter: detail
-      filename: "/data1/logs/cluster/hawkeye.log"
+      filename: "/data1/logs/cluster/panda.log"
     backend:
       class: logging.FileHandler
       level: DEBUG
@@ -254,7 +254,7 @@ database:
     ## The username of the database to auth.
     username: "root"
     ## The password of the database to auth.
-    password: "12345678*"
+    password: "it's so secret!"
     ## Specify the database connection string.
     ## Examples, see documentation for more:
     driver: mysqlconnector
@@ -265,11 +265,11 @@ database:
     ## The default database provide service port
     port: 27017
     ## The connect database name.
-    dbname: "hawkeye"
+    dbname: "panda"
     ## The username of the database to auth.
     username: "root"
     ## The password of the database to auth.
-    password: "12345678*"
+    password: "it's so secret!"
     ## Automatically delete large dict values that exceed mongos 16MB limitation
     ## Note: This only deletes dict keys from data stored in MongoDB. You would
     ## still get the full dataset if you parsed the results dict in another
@@ -310,15 +310,6 @@ database:
       analysis:
         enable: True
         index: "sandbox-analysis"
-
-  sqlite:
-    ## The Kaspersky Antivirus SQLite file settings.
-    kaspersky:
-      ## Database connection timeout in seconds.
-      ## If empty, default is set to 60 seconds.
-      timeout: 60
-      ## The sqlite file path.
-      path: "sqlite:////var/opt/kaspersky/kav4fs/db/event_storage/curr.db"
 
 
 # Sandbox Machine Settings
