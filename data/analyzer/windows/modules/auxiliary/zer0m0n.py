@@ -6,7 +6,7 @@ import logging
 
 from lib.api.process import subprocess_checkcall
 from lib.common.abstracts import Auxiliary
-from lib.common.exceptions import CuckooError
+from lib.exceptions.exceptions import CuckooError
 from lib.core.driver import Driver
 from lib.core.ioctl import driver_name as random_name
 

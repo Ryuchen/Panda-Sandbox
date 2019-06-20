@@ -6,7 +6,7 @@ import logging
 
 from lib.api.process import Process
 from lib.common.abstracts import Auxiliary
-from lib.common.exceptions import CuckooError
+from lib.exceptions.exceptions import CuckooError
 
 log = logging.getLogger(__name__)
 

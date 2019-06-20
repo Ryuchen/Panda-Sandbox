@@ -12,7 +12,7 @@ import xmlrpclib
 import time
 
 from lib.core.packages import choose_package
-from lib.common.exceptions import CuckooError, CuckooPackageError
+from lib.exceptions.exceptions import CuckooError, CuckooPackageError
 from lib.common.abstracts import Package, Auxiliary
 from lib.common.constants import PATHS
 from lib.core.config import Config

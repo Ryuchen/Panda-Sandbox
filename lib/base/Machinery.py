@@ -10,8 +10,8 @@ import time
 import logging
 
 from lib.common import config
-from lib.common.exceptions import CuckooCriticalError
-from lib.common.exceptions import CuckooMachineError
+from lib.exceptions.exceptions import CuckooCriticalError
+from lib.exceptions.exceptions import CuckooMachineError
 from lib.misc import cwd
 
 log = logging.getLogger(__name__)

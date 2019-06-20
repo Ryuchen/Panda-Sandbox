@@ -10,7 +10,7 @@ from _winreg import CreateKey, SetValueEx, CloseKey, REG_DWORD, REG_SZ
 
 from lib.api.process import Process
 from lib.common.decide import dump_memory
-from lib.common.exceptions import CuckooPackageError
+from lib.exceptions.exceptions import CuckooPackageError
 
 class Package(object):
     """Base abstract analysis package."""

@@ -18,7 +18,7 @@ from _subprocess import STARTF_USESTDHANDLES
 from lib.common.constants import SHUTDOWN_MUTEX
 from lib.common.defines import KERNEL32, NTDLL, SYSTEM_INFO, STILL_ACTIVE
 from lib.common.defines import THREAD_ALL_ACCESS, PROCESS_ALL_ACCESS
-from lib.common.exceptions import CuckooError
+from lib.exceptions.exceptions import CuckooError
 from lib.common.results import upload_to_host
 from lib.core.ioctl import zer0m0n
 

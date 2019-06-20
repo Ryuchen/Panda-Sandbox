@@ -20,7 +20,7 @@ from lib.core.packages import choose_package_class
 from lib.core.osx import set_wallclock
 from lib.core.host import CuckooHost
 from lib.common.abstracts import Auxiliary
-from lib.common.exceptions import CuckooDisableModule
+from lib.exceptions.exceptions import CuckooDisableModule
 from modules import auxiliary
 
 log = logging.getLogger("analyzer")

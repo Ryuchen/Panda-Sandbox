@@ -9,7 +9,7 @@ import shutil
 import _winreg
 
 from lib.common.defines import NTDLL, UNICODE_STRING
-from lib.common.exceptions import CuckooError
+from lib.exceptions.exceptions import CuckooError
 from lib.common.registry import set_regkey, del_regkey
 
 class Driver(object):

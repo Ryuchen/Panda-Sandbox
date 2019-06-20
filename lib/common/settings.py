@@ -47,26 +47,16 @@ class Settings:
 
     settings = {}
 
-    def __init__(self):
-        pass
-
-    @classmethod
-    def loading_default(cls):
-        """
-        loading the settings of default.
-        :return:
-        """
-        if os.path.exists(cls.default_path):
-            with open(cls.default_path) as default_config:
-                cls.settings = yaml.load(default_config, Loader=yaml.SafeLoader)
-
     @classmethod
     def loading_settings(cls):
         """
         To merge the settings into the main setting.
         :return:
         """
-        cls.loading_default()
+        if os.path.exists(cls.default_path):
+            with open(cls.default_path) as default_config:
+                cls.settings = yaml.load(default_config, Loader=yaml.SafeLoader)
+
         if cls.default_config:
             cls.settings.update(cls.default_config)
 

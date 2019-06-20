@@ -7,7 +7,7 @@ import subprocess
 import time
 
 from lib.common.abstracts import Auxiliary
-from lib.common.exceptions import CuckooDisableModule, CuckooPackageError
+from lib.exceptions.exceptions import CuckooDisableModule, CuckooPackageError
 from lib.common.results import upload_to_host
 
 class Procmon(Auxiliary):

@@ -3,7 +3,7 @@
 # See the file 'docs/LICENSE' for copying permission.
 
 from lib.api.process import Process
-from lib.common.exceptions import CuckooPackageError
+from lib.exceptions.exceptions import CuckooPackageError
 
 class Package(object):
     """Base abstract analysis package."""

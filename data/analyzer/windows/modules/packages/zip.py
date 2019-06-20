@@ -10,7 +10,7 @@ import logging
 from zipfile import ZipFile, BadZipfile
 
 from lib.common.abstracts import Package
-from lib.common.exceptions import CuckooPackageError
+from lib.exceptions.exceptions import CuckooPackageError
 
 log = logging.getLogger(__name__)
 

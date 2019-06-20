@@ -44,15 +44,20 @@ app.conf.update(
 )
 
 
-# When celery start to initialise need to load multiple database session to context.
+# When celery start to initialise need to load all backend service to context.
 @app.on_configure.connect
 def setup_initialise(sender, **kwargs):
+    # TODO: 1. we need to loading all task here
+    # TODO: 2. initialise database connection here
+    # TODO: 3. create the elasticsearch template index here
     print("app initialise signals received: %s" % sender.name)
 
 
 # When celery after initialise we register our task into the celery.
 @app.on_after_configure.connect
 def setup_celery_tasks(sender, **kwargs):
+    # TODO: 1. start all backend service here
+    # TODO: 2. start result server here
     print("app after configure signals received: %s" % sender.name)
 
 

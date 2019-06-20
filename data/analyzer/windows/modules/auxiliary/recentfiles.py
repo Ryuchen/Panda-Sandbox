@@ -10,7 +10,6 @@ import uuid
 
 from lib.common.abstracts import Auxiliary
 from lib.common.defines import SHELL32, SHARD_PATHA, PWSTR
-from lib.common.exceptions import CuckooError
 from lib.common.rand import random_string
 from lib.common.registry import set_regkey_full
 

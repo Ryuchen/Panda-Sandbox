@@ -36,9 +36,12 @@ settings:
     linux:
       enable: False
       extension:
-        - 'crx'
-        - 'htm'
-        - 'txt'
+        - 'shell'
+        - 'elf'
+        - 'deb'
+        - 'rpm'
+        - 'kernel'
+        - 'perl'
     darwin:
       enable: False
       extension:
@@ -64,12 +67,9 @@ settings:
     browser:
       enable: True
       extension:
-        - 'shell'
-        - 'elf'
-        - 'deb'
-        - 'rpm'
-        - 'kernel'
-        - 'perl'
+        - 'crx'
+        - 'htm'
+        - 'txt'
     windows:
       enable: True
       extension:
