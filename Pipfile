@@ -12,6 +12,7 @@ chardet = "*"
 click = "*"
 redis = "*"
 celery = "*"
+flask = "*"
 
 [requires]
 python_version = "3.7"

@@ -1,9 +1,9 @@
 ###########################################################
-#                     HawkEye  Sandbox                    #
+#                  Panda Sandbox(钟馗沙箱)                  #
 ###########################################################
 #
 # Sandbox Release Version
-version: 1.7.6
+version: 1.0.0-alpha
 
 
 # Sandbox Common Settings
@@ -33,12 +33,90 @@ settings:
   ## to store this task in sandbox workflow, by default if it turn on the task will put into
   ## queue in workflow, with no consumer it will block the inspector thread.
   support:
-    linux: False
-    darwin: False
-    android: False
-    archive: True
-    browser: True
-    windows: True
+    linux:
+      enable: False
+      extension:
+        - 'crx'
+        - 'htm'
+        - 'txt'
+    darwin:
+      enable: False
+      extension:
+        - 'mac'
+    android:
+      enable: False
+      extension:
+        - 'apk'
+        - 'dex'
+    archive:
+      enable: True
+      extension:
+        - '7z'
+        - 'lzh'
+        - 'rar'
+        - 'zip'
+        - 'eml'
+        - 'msg'
+        - 'ace'
+        - 'cab'
+        - 'bzip'
+        - 'gzip'
+    browser:
+      enable: True
+      extension:
+        - 'shell'
+        - 'elf'
+        - 'deb'
+        - 'rpm'
+        - 'kernel'
+        - 'perl'
+    windows:
+      enable: True
+      extension:
+        - 'js'
+        - 'exe'
+        - 'doc'
+        - 'xls'
+        - 'ppt'
+        - 'pdf'
+        - 'msi'
+        - 'rtf'
+        - 'ps1'
+        - 'inf'
+        - 'zip'
+        - 'tar'
+        - 'jar'
+        - 'dll'
+        - 'bin'
+        - 'lnk'
+        - 'bat'
+        - 'cmd'
+        - 'com'
+        - 'cpl'
+        - 'dos'
+        - 'emf'
+        - 'gif'
+        - 'hlp'
+        - 'img'
+        - 'jpg'
+        - 'png'
+        - 'psi'
+        - 'swf'
+        - 'sys'
+        - 'vbs'
+        - 'wps'
+        - 'wsf'
+        - 'xar'
+        - 'xml'
+        - 'pptx'
+        - 'xlsx'
+        - 'docx'
+        - 'exe+'
+        - 'pcap'
+        - 'audio'
+        - 'video'
+        - 'python'
+        - 'generic'
 
 
 # Sandbox Logging Settings
@@ -52,7 +130,7 @@ logging:
       format: "%(asctime)s-[%(filename)s:%(lineno)s-%(levelname)s]: %(message)s"
   handlers:
     console:
-      class: logging.StreamHandler
+      class: "lib.hawkeye.plugins.logger.ConsoleHandler.ConsoleHandler"
       level: DEBUG
       formatter: detail
       stream: ext://sys.stdout
@@ -287,7 +365,7 @@ machine:
     ### count: The number of the each platform.
     windows:
       name: "windows.qcow2"
-      count: 10
+      count: 1
     android:
       name: "android.qcow2"
       count: 0
@@ -300,61 +378,42 @@ machine:
 
 
 # Sandbox Workers Settings
-# The section name of the worker is the process name.
+# The section name of the worker is the sub module process name.
 # The enable is the status of the worker to start or not.
 # The status is the Brain manager to check the worker is alive or not cycle time.
 workers:
-  ## The worker to receive task from redis channel.
+  ## 接收待检测文件的子模块，两种模式: Redis 模式 & Router 模式.
+  ## > Redis 模式负责接收从引擎还原出来的文件，Router 模式负责作为集群模式中子节点接收父节点的文件.
+  ## > 该功能模块会根据配置的单机结点数量创建相应的线程进行文件的接收
   Receiver:
     enable: True
     status: 5
-    pending: 20000
-    limit:
+    pending: 20000  # 最大的数据库排队数量，多余该数量的待检测文件，将进行丢弃，如果设置为 0 则对应无限制
+    limit:  # 对于检测文件的大小限制
       upsize: 4194304
       downsize: 49152
-  ## The worker to receive task from redis channel.
+  ## 提供待检测文件的子模块，两种模式：Single 模式 & Router 模式，两种通道：将待检测的文件和待出报告的文件输出到相应的 redis 通道.
+  ## > Single 模式负责本地的调用，将本地的 DB 数据查询输出，Router 模式负责集群模式中父节点进行分发文件的任务.
+  ## > tasks 对应的通道是输送文件对象到 Inspector 中去虚拟机中检测，report 对应的通道是输送检测完的文件对象到 Processor 中分析对应的动态行为
   Provider:
     enable: True
     status: 10
-  ## The worker to receive task from redis channel.
+  ## 将待检测文件进行过滤(选择对应的虚拟机平台及其他愚蠢的需求)的子模块，三种模式：Default 模式 & Sandbox 模式 & Verify 模式(APT).
+  ## > Default 模式负责线上模式的过滤动作，只将部分可能为恶意的文件提交到后续流程，大部分白文件只输出原始事件
+  ## > Sandbox 模式负责纯检测模式，只对文件进行虚拟机平台的选择
+  ## > Verify 模式负责未知检测模式，最对无法判断是否为恶意的文件提交到后续流程，大部分白文件将落入后续流程
   Inspector:
     enable: True
     status: 300
-  ## The worker to receive task from redis channel.
+  ## 专门用来处理，当用户打开 html 等 web 文件类型的时候，高峰值文件涌入沙箱时，沙箱无法处理过来大批量文件的问题，用来泄洪.
+  ## > 目前只是使用了 clamav 作为检测的唯一手段，建议通过压测之后，根据效果集成其他检测手段.
+  ## > TODO：长远看来，希望在这个地方能够真正集成 web 检测的 sandbox，做到真正的检测相应文件的真沙箱
   Browser:
     enable: True
     status: 5
-  ## The worker to receive task from redis channel.
-  Analyser:
-    enable: True
-    status: 30
-  ## The worker to receive task from redis channel.
-  Processor:
-    enable: True
-    status: 2
-    limit:
-      time: 600
-      memory: 2097152
-    level: 1
-    delete_bson: True
-    delete_drop: True
-    rsync_files: False
-  ## The worker to receive task from redis channel.
-  Publisher:
-    enable: True
-    status: 300
-    method:
-      redis: True
-      elasticsearch: False
-    message:
-      event: True
-      notice: True
-    delete_database: True
-  ## The worker to receive task from redis channel.
-  Sweeper:
-    enable: False
-    status: 300
-  ## The worker to receive task from redis channel.
+  ## 专门用来处理，流量中产生的压缩文件，因为压缩文件对沙箱的分析不是十分友好，所以需要对其在宿主机上进行解压，但这个操作并不是十分安全.
+  ## > 目前是根据下方配置的 extension 来判断是否需要进行相应分析的，后续需要进行更为有效的判断.
+  ## > 后续能够针对于客户手动提交的文件，手动设置解压缩的密码，(后续可以根据av扫描的结果来过滤部分解压动作，提高性能)
   Unpacker:
     enable: True
     status: 300
@@ -382,6 +441,45 @@ workers:
       - "dll"
       - "bin"
       - "lnk"
+  ## 专门用来调度虚拟机的子模块，根据虚拟机的平台信息，分配不同的虚拟机平台(android, windows, linux, darwin)
+  ## > 目前只保留了调度 KVM 的内核的虚拟机模块，主要原因是绑定了使用 libvirt 作为管理工具的调度
+  ## > 目前使用的是 qemu-kvm 作为虚拟机，相关的配置项都保存在 machine 配置段内，具体请参考其配置
+  Analyser:
+    enable: True
+    status: 30
+  ## 这部分子模块不仅仅用来分析虚拟机输出的日志信息，还包括全部的沙箱检测手段，所谓集成沙箱检测手段，都是指在该模块中集成一个 python 脚本即可.
+  ## > 包括：process、signature、reporting 三个部分
+  ## > 这里是整个框架中最特殊的一部分，因为这里的多进程中的线程不是持续运行的，而是一个文件一个有限线程，运行完后自行退出，所以是整个项目中最奇怪的部分.
+  ## > 之所以这么做的原因是，能够限制每个任务在分析过程中的内存使用和 CPU 使用，否则，我们无法对其进行有效停止，最终造成系统的不够稳定.
+  ## > TODO: 后续需要集成检测手段，在不考虑整个架构重构的情况下，只需要在这里集成一个脚本即可，注意一定要符合原来的编码规范！！！
+  Processor:
+    enable: True
+    status: 2
+    limit:
+      time: 600
+      memory: 2097152
+    level: 1
+    delete_bson: True
+    delete_drop: True
+    rsync_files: False
+  ## 这是沙箱中的发送时间的子模块，目前支持在集群（特指在机器学习集群下）和普通模式下的时间输出，这里是文件的总出口，可以对此进行细致的更改.
+  ## > 在默认模式下，即普通模式下，输出事件到 redis 中间，然后目前是输出两种数据格式，一种是 event(sandbox-file-event) 一种是 notice(host-threat)
+  ## > 只有在集群模式下，才需要将下面的输出改成 elasticsearch，这样沙箱将不会通过 redis 直接向索引中吐出数据.
+  Publisher:
+    enable: True
+    status: 300
+    method:
+      redis: True
+      elasticsearch: False
+    message:
+      event: True
+      notice: True
+    delete_database: True
+  ## 清理进程，限制沙箱的数据堆积和分析报告的无限增长，因为大部分使用了 shell 脚本进行处理，所以木有开启，不过建议后续启用
+  ## TODO: 完善此部分的代码，去除 shell 脚本，保证项目的完整性，对应的属性配置目前在 storage 配置段中.
+  Sweeper:
+    enable: False
+    status: 300
 
 # Sandbox File Caching Settings
 caching:
@@ -394,89 +492,3 @@ caching:
   pdf: True
   hta: True
   swf: True
-# Sandbox FileType Settings
-filetype:
-  windows:
-    enable: True
-    extension:
-      js: True
-      exe: True
-      doc: True
-      xls: True
-      ppt: True
-      pdf: True
-      msi: True
-      rtf: True
-      ps1: True
-      inf: True
-      zip: True
-      tar: True
-      jar: True
-      dll: True
-      bin: True
-      lnk: True
-      bat: True
-      cmd: True
-      com: True
-      cpl: True
-      dos: True
-      emf: True
-      gif: True
-      hlp: True
-      img: True
-      jpg: True
-      png: True
-      psi: True
-      swf: True
-      sys: True
-      vbs: True
-      wps: True
-      wsf: True
-      xar: True
-      xml: True
-      pptx: True
-      xlsx: True
-      docx: True
-      exe+: True
-      pacp: True
-      audio: True
-      video: True
-      python: True
-      generic: True
-  android:
-    enable: True
-    extension:
-      apk: True
-      dex: True
-  linux:
-    enable: True
-    extension:
-      shell: True
-      elf: True
-      deb: True
-      rpm: True
-      kernal: True
-      perl: True
-  browser:
-    enable: True
-    extension:
-      crx: True
-      htm: True
-      txt: True
-  archive:
-    enable: True
-    extension:
-      7z: True
-      lzh: True
-      rar: True
-      zip: True
-      eml: True
-      msg: True
-      ace: True
-      cab: True
-      bzip: True
-      gzip: True
-  darwin:
-    enable: True
-    extension:
-       mac: True
