@@ -6,7 +6,6 @@
 # @File : celery.py
 # @Desc :
 # ==================================================
-
 import os
 import sys
 import logging
@@ -19,8 +18,6 @@ from celery.signals import task_success
 from celery.signals import task_failure
 
 from lib.common.settings import Settings
-from contrib.mysql.base import MysqlBase
-from contrib.elastic.indices.host_aggtask import AggTaskLog
 
 log = logging.getLogger(__name__)
 
@@ -102,23 +99,10 @@ def search_agg_task_log(signal, sender, *args, **kwargs):
 
 @task_success.connect
 def insert_agg_task_log(signal, sender, result, *args, **kwargs):
-    if result:
-        index = '{0}-{1}'.format(
-            AggTaskLog.Index.name,
-            datetime.datetime.now().strftime("%Y-%m-%d"),
-        )
-        for _ in result:
-            agg_task_log = AggTaskLog(
-                task_name=sender.name,
-                rule_name=_.get("rule_name"),
-                start_time=_.get("start_time"),
-                end_time=_.get("end_time"),
-                risk_host_cnt=_.get("risk_host_cnt")
-            )
-            agg_task_log.save(index=index)
+    print("task success signals received: %s" % sender.name)
 
 
 @task_failure.connect
 def record_agg_task_log(signal, sender, **kwargs):
     # Get last running time
-    log.info("signals received: %s" % sender.name)
+    print("task failure signals received: %s" % sender.name)
