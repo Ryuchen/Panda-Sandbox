@@ -8,9 +8,7 @@
 # ==================================================
 import os
 import yaml
-import fcntl
 import socket
-import struct
 
 _current_dir = os.path.abspath(os.path.dirname(__file__))
 CONFIG_ROOT = os.path.normpath(os.path.join(_current_dir, "..", "config"))
@@ -22,7 +20,7 @@ class Settings:
     """
 
     default_path = os.path.join(CONFIG_ROOT, "config.yaml")
-    settings = {
+    default_config = {
         "version": "v1.0.0-alpha",
         "hostname": "default",
         "hostaddr": "192.168.10.1",
@@ -46,7 +44,8 @@ class Settings:
             }
         }
     }
-    default_config = {}
+
+    settings = {}
 
     def __init__(self):
         pass
@@ -59,7 +58,7 @@ class Settings:
         """
         if os.path.exists(cls.default_path):
             with open(cls.default_path) as default_config:
-                cls.default_config = yaml.load(default_config, Loader=yaml.SafeLoader)
+                cls.settings = yaml.load(default_config, Loader=yaml.SafeLoader)
 
     @classmethod
     def loading_settings(cls):
@@ -73,13 +72,4 @@ class Settings:
 
         cls.settings["hostname"] = socket.gethostname()
 
-        try:
-            manage_nic = os.environ["GEYE_MANAGENIC"]
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            host_ip = socket.inet_ntoa(fcntl.ioctl(s.fileno(), 0x8915, struct.pack('256s', manage_nic[:15]))[20:24])
-        except:
-            host_ip = cls.settings["host_ip"]
-
-        cls.settings["host_ip"] = host_ip
-
-        return cls
+        return cls.settings

@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # ==================================================
-# @Time : 2019-06-20 10:24
+# @Time : 2019-06-20 14:18
 # @Author : ryuchen
-# @File : start.py.py
+# @File : flask.py
 # @Desc :
 # ==================================================
 
+from flask import Flask
 
+app = Flask(__name__)
