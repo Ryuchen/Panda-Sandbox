@@ -18,7 +18,7 @@ from celery.signals import task_prerun
 from celery.signals import task_success
 from celery.signals import task_failure
 
-from common.settings import Settings
+from lib.common.settings import Settings
 from contrib.mysql.base import MysqlBase
 from contrib.elastic.indices.host_aggtask import AggTaskLog
 

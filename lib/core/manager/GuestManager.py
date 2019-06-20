@@ -16,11 +16,11 @@ import logging
 import requests
 import datetime
 
-from common import config, parse_options
-from common import (
+from lib.common import config, parse_options
+from lib.common import (
     CuckooGuestError, CuckooGuestCriticalTimeout
 )
-from core import Database
+from lib.core import Database
 from misc import cwd
 
 log = logging.getLogger(__name__)

@@ -12,9 +12,9 @@ import click
 import logging
 import configparser
 
-from common import CuckooConfigurationError
-from common import Dictionary
-from common import parse_bool
+from lib.common import CuckooConfigurationError
+from lib.common import Dictionary
+from lib.common import parse_bool
 from cuckoo.misc import cwd
 
 log = logging.getLogger(__name__)

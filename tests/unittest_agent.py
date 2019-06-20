@@ -20,7 +20,7 @@ import requests
 
 sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".."))
 
-from common.exceptions import CuckooGuestError
+from lib.common.exceptions import CuckooGuestError
 
 log = logging.getLogger(__name__)
 

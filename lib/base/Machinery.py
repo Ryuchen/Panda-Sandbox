@@ -9,9 +9,9 @@
 import time
 import logging
 
-from common.config import config
-from common.exceptions import CuckooCriticalError
-from common.exceptions import CuckooMachineError
+from lib.common import config
+from lib.common.exceptions import CuckooCriticalError
+from lib.common.exceptions import CuckooMachineError
 from lib.misc import cwd
 
 log = logging.getLogger(__name__)
