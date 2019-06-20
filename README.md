@@ -1,11 +1,9 @@
 <h1 align="center">Welcome to Panda-Sandbox(钟馗沙箱)</h1>
 <p align="center">
-  <img src="https://img.shields.io/badge/version-v0.1-blue.svg?cacheSeconds=2592000" />
+  <img src="https://img.shields.io/badge/version-v1.0.0(alpha)-blue.svg?cacheSeconds=2592000" />
   <img src="https://img.shields.io/badge/language-python3-blue.svg?cacheSeconds=2592000" />
   <img src="https://img.shields.io/badge/platform-macos-blue.svg?cacheSeconds=2592000" />
-  <a href="http://www.gnu.org/licenses/gpl-3.0.html">
-    <img alt="License: GPL" src="https://img.shields.io/badge/License-GPL-yellow.svg" target="_blank" />
-  </a>
+  <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
 </p>
 
 ### 🏠 [个人小栈](https://ryuchen.github.io/)
