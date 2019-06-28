@@ -6,212 +6,120 @@
 # @File : types.py
 # @Desc :
 # ==================================================
-import re
-import click
-import numbers
-import logging
+import abc
 
-log = logging.getLogger(__name__)
+from numbers import Number
 
-
-def parse_bool(value):
-    """Attempt to parse a boolean value."""
-    if value in ("true", "True", "yes", "1", "on"):
-        return True
-    if value in ("false", "False", "None", "no", "0", "off"):
-        return False
-    return bool(int(value))
+from lib.exceptions.critical import PandaStartupError
 
 
-class Type:
-    """Base Class for Type Definitions"""
+class Type(metaclass=abc.ABCMeta):
+    __doc__ = """
+    Base Class for Sandbox Type Definitions
+    Must Implement this class for subtype to create new instance.
+    Initialise its with params:
+    :param default     默认值
+    :param allow_empty 可取空
+    Must implement with methods:
+    :method parse      转化
+    :method check      校验
+    """
 
-    def __init__(self, default=None, required=True, sanitize=False, allow_empty=False):
-        self.default = self.parse(default)
-
-        self.required = required
-        self.sanitize = sanitize
+    def __init__(self, default=None, allow_empty=False):
+        self.default = default
         self.allow_empty = allow_empty
 
+        self._value = None
+
+    def __get__(self, instance, owner):
+        if not self._value:
+            return self.default
+        return self._value
+
+    def __set__(self, instance, value):
+        if self.check(value):
+            self._value = value
+        else:
+            self._value = self.parse(value)
+
+    @abc.abstractmethod
     def parse(self, value):
-        """Parse a raw input value."""
+        """ parse a raw input value to correct type value and locate in the value range """
 
+    @abc.abstractmethod
     def check(self, value):
-        """Checks the type of the value."""
-
-    def emit(self, value):
-        """String-readable version of this object"""
+        """ check the type of a raw value whether we need this type in this instance """
 
 
 class Int(Type):
-    """Integer Type Definition class."""
+    """ Integer Type Definition class """
+
+    def __init__(self, default, allow_empty, v_range=None):
+        if v_range:
+            (self.min_value, self.max_value) = v_range
+            if self.min_value > self.max_value:
+                raise PandaStartupError("value range incorrect")
+        else:
+            (self.min_value, self.max_value) = (None, None)
+        super(Int, self).__init__(default, allow_empty)
 
     def parse(self, value):
-        if isinstance(value, (int, numbers.Complex)):
-            return value
+        def num_range(ctx, val):
+            _fin = val
+            if ctx.min_value and val < ctx.min_value:
+                _fin = ctx.min_value
+
+            if ctx.max_value and ctx.max_value < val:
+                _fin = ctx.max_value
+            return _fin
+
+        if isinstance(value, Number):
+            if isinstance(value, bool):
+                return 1 if value else 0
+
+            return num_range(self, value)
 
         if isinstance(value, str) and value.isdigit():
-            return int(value)
+            _value = int(value)
+            return num_range(self, _value)
+        else:
+            return self.default
 
     def check(self, value):
-        if self.allow_empty and not value:
-            return True
+        if isinstance(value, Number):
+            if isinstance(value, bool):
+                return False
 
-        try:
-            click.INT(value)
-            return True
-        except click.exceptions.BadParameter:
+            if self.min_value and value < self.min_value:
+                return False
+
+            if self.max_value and self.max_value < value:
+                return False
+        else:
             return False
 
-    def emit(self, value):
-        return "%d" % value if value else ""
+        return True
 
 
 class String(Type):
-    """String Type Definition class."""
+    """ String Type Definition class """
 
     def parse(self, value):
         return value.strip() if value else None
 
     def check(self, value):
-        if self.allow_empty and not value:
-            return True
-
         return isinstance(value, str)
-
-    def emit(self, value):
-        return value or ""
-
-
-class Path(String):
-    """Path Type Definition class."""
-
-    def __init__(
-        self,
-        default=None,
-        exists=False,
-        writable=False,
-        readable=False,
-        required=True,
-        allow_empty=False,
-        sanitize=False,
-    ):
-        self.exists = exists
-        self.writable = writable
-        self.readable = readable
-        super(Path, self).__init__(default, required, sanitize, allow_empty)
-
-    def parse(self, value):
-        if self.allow_empty and not value:
-            return
-
-        try:
-            c = click.Path(
-                exists=self.exists, writable=self.writable, readable=self.readable
-            )
-            return c.convert(value, None, None)
-        except click.exceptions.BadParameter:
-            return value
-
-    def check(self, value):
-        if self.allow_empty and not value:
-            return True
-
-        try:
-            c = click.Path(
-                exists=self.exists, writable=self.writable, readable=self.readable
-            )
-            c.convert(value, None, None)
-            return True
-        except click.exceptions.BadParameter:
-            return False
-
-    def emit(self, value):
-        return value or ""
 
 
 class Boolean(Type):
-    """Boolean Type Definition class."""
+    """ Boolean Type Definition class """
 
     def parse(self, value):
-        try:
-            return parse_bool(value)
-        except ValueError:
-            log.error("Incorrect Boolean %s", value)
+        if value in ("true", "True", "yes", "1", "on", "open"):
+            return True
+        if value in ("false", "False", "no", "0", "off", "close"):
             return False
+        return self.default
 
     def check(self, value):
-        try:
-            parse_bool(value)
-            return True
-        except ValueError:
-            return False
-
-    def emit(self, value):
-        return "yes" if value else "no"
-
-
-class UUID(Type):
-    """UUID Type Definition class."""
-
-    def parse(self, value):
-        try:
-            c = click.UUID(value)
-            return str(c)
-        except click.exceptions.BadParameter:
-            log.error("Incorrect UUID %s", value)
-
-    def check(self, value):
-        """Check if the value is of type UUID."""
-        try:
-            click.UUID(value)
-            return True
-        except click.exceptions.BadParameter:
-            return False
-
-    def emit(self, value):
-        return value
-
-
-class List(Type):
-    """List Type Definition class."""
-
-    def __init__(self, subclass, default, sep=",", strip=True):
-        self.subclass = subclass
-        self.sep = sep
-        self.strip = strip
-        super(List, self).__init__(default)
-
-    def parse(self, value):
-        if value is None:
-            return []
-
-        try:
-            ret = []
-
-            if isinstance(value, (tuple, list)):
-                for entry in value:
-                    ret.append(self.subclass().parse(entry))
-                return ret
-
-            for entry in re.split("[%s]" % self.sep, value):
-                if self.strip:
-                    entry = entry.strip()
-                    if not entry:
-                        continue
-
-                ret.append(self.subclass().parse(entry))
-            return ret
-        except ValueError:
-            log.error("Incorrect list: %s", value)
-            return []
-
-    def check(self, value):
-        try:
-            value.split(self.sep)
-            return True
-        except AttributeError:
-            return False
-
-    def emit(self, value):
-        return (", " if self.sep[0] == "," else self.sep[0]).join(value or "")
+        return isinstance(value, bool)

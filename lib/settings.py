@@ -10,8 +10,8 @@ import os
 import yaml
 import socket
 
-_current_dir = os.path.abspath(os.path.dirname(__file__))
-CONFIG_ROOT = os.path.normpath(os.path.join(_current_dir, "..", "config"))
+from lib.defines.types import String
+from lib.defines.context import SANDBOX_CONFIG_DIR
 
 
 class Settings:
@@ -19,23 +19,15 @@ class Settings:
     This function to protect the custom setting config does not influence the program successfully start up.
     """
 
-    default_path = os.path.join(CONFIG_ROOT, "config.yaml")
+    default_path = os.path.join(SANDBOX_CONFIG_DIR, "default.yaml")
     default_config = {
-        "version": "v1.0.0-alpha",
-        "hostname": "default",
-        "hostaddr": "192.168.10.1",
+        "version": String(default="v1.0.0-alpha", allow_empty=False),
+        "hostname": String(default="default", allow_empty=True),
+        "hostaddr": String(default="192.168.93.77", allow_empty=True),
         "connection": {
             "redis": {
                 "host": "127.0.0.1",
                 "port": 6379,
-                "timeout": 60
-            },
-            "database": {
-                "host": "127.0.0.1",
-                "port": 3306,
-                "dbname": "panda",
-                "username": "root",
-                "password": "it's so secret",
                 "timeout": 60
             },
             "elasticsearch": {
@@ -53,12 +45,20 @@ class Settings:
         To merge the settings into the main setting.
         :return:
         """
+        def merge_dict(target, source):
+            for key, value in source.items():
+                if isinstance(value, dict):
+                    merge_dict(target.get(key), value)
+                else:
+                    if value:
+                        target.update(source)
+
         if os.path.exists(cls.default_path):
             with open(cls.default_path) as default_config:
                 cls.settings = yaml.load(default_config, Loader=yaml.SafeLoader)
 
         if cls.default_config:
-            cls.settings.update(cls.default_config)
+            merge_dict(cls.settings, cls.default_config)
 
         cls.settings["hostname"] = socket.gethostname()
 

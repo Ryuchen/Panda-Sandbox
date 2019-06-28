@@ -9,7 +9,7 @@ import logging
 import threading
 
 from lib.common.abstracts import Auxiliary
-from lib.common.defines import (
+from lib.defines.defines import (
     KERNEL32, USER32, WM_GETTEXT, WM_GETTEXTLENGTH, WM_CLOSE, BM_CLICK,
     EnumWindowsProc, EnumChildProc, create_unicode_buffer
 )

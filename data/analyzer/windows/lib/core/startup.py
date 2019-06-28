@@ -6,7 +6,7 @@
 import ctypes
 import logging
 
-from lib.common.defines import KERNEL32, SYSTEMTIME
+from lib.defines.defines import KERNEL32, SYSTEMTIME
 from lib.common.results import NetlogHandler
 
 log = logging.getLogger()

@@ -5,9 +5,9 @@
 
 from ctypes import wintypes, POINTER
 
-from lib.common.defines import ADVAPI32, KERNEL32, SE_PRIVILEGE_ENABLED
-from lib.common.defines import LUID, TOKEN_PRIVILEGES
-from lib.common.defines import TOKEN_ALL_ACCESS, LUID_AND_ATTRIBUTES
+from lib.defines.defines import ADVAPI32, KERNEL32, SE_PRIVILEGE_ENABLED
+from lib.defines.defines import LUID, TOKEN_PRIVILEGES
+from lib.defines.defines import TOKEN_ALL_ACCESS, LUID_AND_ATTRIBUTES
 
 def grant_privilege(privilege):
     """Grant debug privileges.

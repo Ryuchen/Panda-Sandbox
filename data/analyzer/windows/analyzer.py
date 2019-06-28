@@ -22,7 +22,7 @@ from lib.api.process import Process
 from lib.common.abstracts import Package, Auxiliary
 from lib.common.constants import SHUTDOWN_MUTEX
 from lib.common.decide import dump_memory
-from lib.common.defines import KERNEL32
+from lib.defines.defines import KERNEL32
 from lib.exceptions.exceptions import CuckooError, CuckooDisableModule
 from lib.common.hashing import hash_file
 from lib.common.rand import random_string

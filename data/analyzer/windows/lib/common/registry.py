@@ -11,7 +11,7 @@ from ctypes import windll, POINTER, byref, pointer
 from ctypes import c_ushort, c_wchar_p, c_void_p, create_string_buffer
 from ctypes.wintypes import HANDLE, DWORD, LPCWSTR, ULONG, LONG
 
-from lib.common.defines import UNICODE_STRING
+from lib.defines.defines import UNICODE_STRING
 
 log = logging.getLogger(__name__)
 

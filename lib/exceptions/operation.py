@@ -8,53 +8,53 @@
 # ==================================================
 
 
-class CuckooOperationalError(Exception):
-    """Cuckoo operation error."""
+class PandaOperationalError(Exception):
+    """Panda operation error."""
 
 
-class CuckooMachineError(CuckooOperationalError):
+class PandaMachineError(PandaOperationalError):
     """Error managing analysis machine."""
 
 
-class CuckooMissingMachineError(CuckooMachineError):
+class PandaMissingMachineError(PandaMachineError):
     """No such machine exists."""
 
 
-class CuckooMachineSnapshotError(CuckooMachineError):
+class PandaMachineSnapshotError(PandaMachineError):
     """Error restoring snapshot from machine."""
 
 
-class CuckooAnalysisError(CuckooOperationalError):
+class PandaAnalysisError(PandaOperationalError):
     """Error during analysis."""
 
 
-class CuckooProcessingError(CuckooOperationalError):
+class PandaProcessingError(PandaOperationalError):
     """Error in processor module."""
 
 
-class CuckooReportError(CuckooOperationalError):
+class PandaReportError(PandaOperationalError):
     """Error in reporting module."""
 
 
-class CuckooGuestError(CuckooOperationalError):
-    """Cuckoo guest agent error."""
+class PandaGuestError(PandaOperationalError):
+    """Panda guest agent error."""
 
 
-class CuckooGuestCriticalTimeout(CuckooGuestError):
+class PandaGuestCriticalTimeout(PandaGuestError):
     """The Host was unable to connect to the Guest."""
 
 
-class CuckooResultError(CuckooOperationalError):
-    """Cuckoo result server error."""
+class PandaResultError(PandaOperationalError):
+    """Panda result server error."""
 
 
-class CuckooDisableModule(CuckooOperationalError):
+class PandaDisableModule(PandaOperationalError):
     """Exception for disabling a module dynamically."""
 
 
-class CuckooFeedbackError(CuckooOperationalError):
+class PandaFeedbackError(PandaOperationalError):
     """Error in feedback module."""
 
 
-class CuckooApiError(CuckooOperationalError):
+class PandaApiError(PandaOperationalError):
     """Error during API usage."""

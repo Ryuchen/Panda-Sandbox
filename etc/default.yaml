@@ -4,15 +4,19 @@
 #
 # Sandbox Release Version
 version: 1.0.0-alpha
-
+#
+# Environment Global Variable
+variable:
+  # The current host localname
+  # hostname: "default"
+  # The current host manage NIC address
+  # hostaddr: "192.168.93.77"
 
 # Sandbox Common Settings
 settings:
   ## The running mode of the sandbox to filter file
-  ## 4: Cluster mode
-  ## 3: Verify mode
-  ## 2: Sandbox mode
-  ## 1: Live mode
+  ## 2: Cluster mode
+  ## 1: Sandbox mode
   mode: 1
   #################### cluster mode ###################
   master: False

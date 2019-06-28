@@ -45,9 +45,11 @@
  
  地址: v1.0.0-alpha [Project 看板](https://github.com/Ryuchen/Panda-Sandbox/projects/1)
  
-### 📖 安装说明:
+### 📖 使用说明:
 
 ```python
+
+   celery -A sandbox worker -l info -B -l INFO -E
 
 ```
 

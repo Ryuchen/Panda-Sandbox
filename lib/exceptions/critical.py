@@ -8,21 +8,21 @@
 # ==================================================
 
 
-class CuckooCriticalError(Exception):
-    """Cuckoo struggle in a critical error."""
+class PandaCriticalError(Exception):
+    """Panda struggle in a critical error."""
 
 
-class CuckooStartupError(CuckooCriticalError):
-    """Error starting up Cuckoo."""
+class PandaStartupError(PandaCriticalError):
+    """Error starting up Panda."""
 
 
-class CuckooDatabaseError(CuckooCriticalError):
-    """Cuckoo database error."""
+class PandaDatabaseError(PandaCriticalError):
+    """Panda database error."""
 
 
-class CuckooDependencyError(CuckooCriticalError):
+class PandaDependencyError(PandaCriticalError):
     """Missing dependency error."""
 
 
-class CuckooConfigurationError(CuckooCriticalError):
+class PandaConfigurationError(PandaCriticalError):
     """Invalid configuration error."""

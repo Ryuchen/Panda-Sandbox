@@ -8,7 +8,7 @@
 # ==================================================
 from celery.bin import worker
 
-from apps.jobs.celery import app
+from sandbox.celery import app
 from lib.base.Application import Application
 
 

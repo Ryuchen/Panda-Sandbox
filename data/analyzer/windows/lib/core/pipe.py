@@ -10,12 +10,12 @@ import errno
 
 from ctypes import create_string_buffer, c_uint, byref, sizeof
 
-from lib.common.defines import KERNEL32, PIPE_ACCESS_INBOUND, ERROR_MORE_DATA
-from lib.common.defines import PIPE_TYPE_BYTE, PIPE_WAIT, ERROR_PIPE_CONNECTED
-from lib.common.defines import PIPE_UNLIMITED_INSTANCES, INVALID_HANDLE_VALUE
-from lib.common.defines import FILE_FLAG_WRITE_THROUGH, PIPE_READMODE_BYTE
-from lib.common.defines import ERROR_BROKEN_PIPE, PIPE_TYPE_MESSAGE
-from lib.common.defines import PIPE_ACCESS_DUPLEX, PIPE_READMODE_MESSAGE
+from lib.defines.defines import KERNEL32, PIPE_ACCESS_INBOUND, ERROR_MORE_DATA
+from lib.defines.defines import PIPE_TYPE_BYTE, PIPE_WAIT, ERROR_PIPE_CONNECTED
+from lib.defines.defines import PIPE_UNLIMITED_INSTANCES, INVALID_HANDLE_VALUE
+from lib.defines.defines import FILE_FLAG_WRITE_THROUGH, PIPE_READMODE_BYTE
+from lib.defines.defines import ERROR_BROKEN_PIPE, PIPE_TYPE_MESSAGE
+from lib.defines.defines import PIPE_ACCESS_DUPLEX, PIPE_READMODE_MESSAGE
 
 log = logging.getLogger(__name__)
 

@@ -7,7 +7,7 @@ import logging
 import socket
 import struct
 
-from lib.common.defines import (
+from lib.defines.defines import (
     KERNEL32, GENERIC_READ, GENERIC_WRITE, FILE_SHARE_READ, FILE_SHARE_WRITE,
     OPEN_EXISTING
 )
