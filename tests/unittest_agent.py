@@ -10,7 +10,7 @@
 Using this unittest to test agent.py function
 The function below was assemble from GuestManager
 
-Running this unittest, before you should starting agent on your develop sys.
+Running this unittest, before you should starting agent on your develop system.
 """
 import os
 import sys
@@ -20,7 +20,7 @@ import requests
 
 sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".."))
 
-from lib.exceptions.exceptions import CuckooGuestError
+from lib.exceptions.operation import PandaGuestError
 
 log = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class AgentUnitTest(object):
         try:
             r = session.get(url, **kwargs)
         except requests.ConnectionError:
-            raise CuckooGuestError(
+            raise PandaGuestError(
                 "Cuckoo Agent failed without error status, please try "
                 "upgrading to the latest version of agent.py (>= 0.8) and "
                 "notify us if the issue persists."
@@ -66,7 +66,7 @@ class AgentUnitTest(object):
         try:
             r = session.post(url, *args, **kwargs)
         except requests.ConnectionError:
-            raise CuckooGuestError(
+            raise PandaGuestError(
                 "Cuckoo Agent failed without error status, please try "
                 "upgrading to the latest version of agent.py (>= 0.8) and "
                 "notify us if the issue persists."
