@@ -1,11 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # ==================================================
-# @Time : 2019-06-20 10:23
-# @Author : ryuchen
-# @File : celery.py
-# @Desc :
+# @Author : Copyright@Ryuchen
+# @License: MIT Licence
+# @File: test.py
+# @Time: 2019/06/20-10:23
+# @Contact: chenhaom1993@hotmail.com
+# @Site: https://ryuchen.github.io
 # ==================================================
+"""
+...
+DocString Here
+...
+"""
 import logging
 
 from celery import Celery
@@ -53,6 +60,3 @@ def setup_backend_service(sender, **kwargs):
 @app.on_after_finalize.connect
 def setup_finalize_check(sender, **kwargs):
     print("app setup_finalize_check signals received")
-
-
-
