@@ -19,3 +19,6 @@ class Masfsadfasdfadsf():
 
     def __init__(self):
         pass
+
+    def lst(self):
+        pass
