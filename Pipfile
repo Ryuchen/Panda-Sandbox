@@ -15,6 +15,7 @@ celery = "*"
 pyyaml = "*"
 gevent = "*"
 flask = "*"
+pycodestyle = "*"
 
 [requires]
 python_version = "3.7"
