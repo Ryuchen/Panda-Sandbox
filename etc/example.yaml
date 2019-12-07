@@ -1,0 +1,181 @@
+###########################################################
+#                  Panda Sandbox(钟馗沙箱)                  #
+###########################################################
+#
+# Sandbox Release Version
+version: 1.0.0-alpha
+
+# Environment Global Variable
+variable:
+  # The current host localname
+  hostname: "default"
+  # The current host manage NIC address
+  hostaddr: "192.168.0.1"
+
+# Sandbox Mode Setting
+settings:
+  ## The running mode of the sandbox to filter file
+  ## Single mode: 1
+  ## Cluster mode: 2
+  mode: 1
+  #################### Cluster Mode ###################
+  master: False
+  server: 172.16.12.1
+  ## Enable creation of memory dump of the analysis machine before shutting
+  ## down. Even if turned off, this functionality can also be enabled at
+  ## submission. Currently available for: VirtualBox and Libvirt modules (KVM).
+  memory_dump: False
+  ## To enable the procmon analyser running in the machine.
+  procmon_dump: False
+  ## The file operations by the malware in the machine.
+  dropped_files: True
+  ## When the timeout of an analysis is hit, the VM is just killed by default.
+  ## For some long-running setups it might be interesting to terminate the
+  ## monitored processes before killing the VM so that connections are closed.
+  terminate_processes: False
+
+## The platform of file support by sandbox, inspector depends on this to determine whether
+## to store this task in sandbox workflow, by default if it turn on the task will put into
+## queue in workflow, with no consumer it will block the inspector thread.
+support:
+  linux:
+    enable: False
+    extension:
+      - 'shell'
+      - 'elf'
+      - 'deb'
+      - 'rpm'
+      - 'kernel'
+      - 'perl'
+  darwin:
+    enable: False
+    extension:
+      - 'mac'
+  android:
+    enable: False
+    extension:
+      - 'apk'
+      - 'dex'
+  archive:
+    enable: True
+    extension:
+      - '7z'
+      - 'lzh'
+      - 'rar'
+      - 'zip'
+      - 'eml'
+      - 'msg'
+      - 'ace'
+      - 'cab'
+      - 'bzip'
+      - 'gzip'
+  browser:
+    enable: True
+    extension:
+      - 'crx'
+      - 'htm'
+      - 'txt'
+  windows:
+    enable: True
+    extension:
+      - 'js'
+      - 'exe'
+      - 'doc'
+      - 'xls'
+      - 'ppt'
+      - 'pdf'
+      - 'msi'
+      - 'rtf'
+      - 'ps1'
+      - 'inf'
+      - 'zip'
+      - 'tar'
+      - 'jar'
+      - 'dll'
+      - 'bin'
+      - 'lnk'
+      - 'bat'
+      - 'cmd'
+      - 'com'
+      - 'cpl'
+      - 'dos'
+      - 'emf'
+      - 'gif'
+      - 'hlp'
+      - 'img'
+      - 'jpg'
+      - 'png'
+      - 'psi'
+      - 'swf'
+      - 'sys'
+      - 'vbs'
+      - 'wps'
+      - 'wsf'
+      - 'xar'
+      - 'xml'
+      - 'pptx'
+      - 'xlsx'
+      - 'docx'
+      - 'exe+'
+      - 'pcap'
+      - 'audio'
+      - 'video'
+      - 'python'
+      - 'generic'
+
+
+# Sandbox Logging Settings
+logging:
+  version: 1
+  disable_existing_loggers: False
+  formatters:
+    simple:
+      format: "%(asctime)s | %(levelname)s | %(message)s"
+    detail:
+      format: "%(asctime)s-[%(filename)s:%(lineno)s-%(levelname)s]: %(message)s"
+  handlers:
+    console:
+      class: "lib.panda.plugins.logger.ConsoleHandler.ConsoleHandler"
+      level: DEBUG
+      formatter: detail
+      stream: ext://sys.stdout
+    sandbox:
+      class: logging.FileHandler
+      level: INFO
+      formatter: detail
+      filename: "/data1/logs/cluster/panda.log"
+    backend:
+      class: logging.FileHandler
+      level: DEBUG
+      formatter: detail
+      filename: "/data1/logs/cluster/backend.log"
+    libvirt:
+      class: logging.FileHandler
+      level: ERROR
+      formatter: detail
+      filename: "/data1/logs/cluster/libvirt.log"
+    distribute:
+      class: logging.FileHandler
+      level: DEBUG
+      formatter: detail
+      filename: "/data1/logs/cluster/distribute.log"
+  loggers:
+    sandbox:
+      level: INFO
+      handlers: [sandbox]
+      propagate: False
+    backend:
+      level: INFO
+      handlers: [backend]
+      propagate: False
+    libvirt:
+      level: ERROR
+      handlers: [libvirt]
+      propagate: False
+    distribute:
+      level: DEBUG
+      handlers: [distribute]
+      propagate: False
+  roots:
+    level: ERROR
+    handlers: []

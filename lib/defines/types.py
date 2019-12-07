@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# ==================================================
-# @Time : 2019-06-20 22:45
-# @Author : ryuchen
-# @File : types.py
-# @Desc :
-# ==================================================
+# ========================================================
+# @Author: Ryuchen
+# @Time: 2019/06/20-22:45
+# @Site: https://ryuchen.github.io
+# @Contact: chenhaom1993@hotmail.com
+# @Copyright: Copyright (C) 2019-2020 Panda-Sandbox.
+# ========================================================
+"""
+Basic variables type setting to protect every setting is correct set
+"""
+
 import abc
 
 from numbers import Number
@@ -14,15 +19,16 @@ from lib.exceptions.critical import PandaStartupError
 
 
 class Type(metaclass=abc.ABCMeta):
+    """ Base Class for Panda-Sandbox Type Definitions """
+
     __doc__ = """
-    Base Class for Sandbox Type Definitions
     Must Implement this class for subtype to create new instance.
     Initialise its with params:
-    :param default     默认值
-    :param allow_empty 可取空
-    Must implement with methods:
-    :method parse      转化
-    :method check      校验
+    :param default::默认值
+    :param allow_empty::可取空
+    @Must implement with below methods:
+    :method parse::转化
+    :method check::校验
     """
 
     def __init__(self, default=None, allow_empty=False):
@@ -31,16 +37,16 @@ class Type(metaclass=abc.ABCMeta):
 
         self._value = None
 
-    def __get__(self, instance, owner):
-        if not self._value:
-            return self.default
-        return self._value
-
     def __set__(self, instance, value):
         if self.check(value):
             self._value = value
         else:
             self._value = self.parse(value)
+
+    def __str__(self):
+        if not self._value:
+            return str(self.default)
+        return str(self._value)
 
     @abc.abstractmethod
     def parse(self, value):
@@ -53,6 +59,13 @@ class Type(metaclass=abc.ABCMeta):
 
 class Int(Type):
     """ Integer Type Definition class """
+
+    __doc__ = """
+    Initialise its with params below:
+        :param default::默认值
+        :param allow_empty::可取空
+        :param v_range::范围 eg: (1, 10)
+    """
 
     def __init__(self, default, allow_empty, v_range=None):
         if v_range:
@@ -104,8 +117,14 @@ class Int(Type):
 class String(Type):
     """ String Type Definition class """
 
+    __doc__ = """
+    Initialise its with params below:
+        :param default::默认值
+        :param allow_empty::可取空
+    """
+
     def parse(self, value):
-        return value.strip() if value else None
+        return str(value).strip() if value else self.default
 
     def check(self, value):
         return isinstance(value, str)
@@ -113,6 +132,12 @@ class String(Type):
 
 class Boolean(Type):
     """ Boolean Type Definition class """
+
+    __doc__ = """
+    Initialise its with params below:
+        :param default::默认值
+        :param allow_empty::可取空
+    """
 
     def parse(self, value):
         if value in ("true", "True", "yes", "1", "on", "open"):

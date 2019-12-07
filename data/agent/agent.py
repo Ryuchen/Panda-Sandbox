@@ -1,11 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# ==================================================
-# @Time : 2019-05-27 23:56
-# @Author : ryuchen
-# @File : agent.py
-# @Desc :
-# ==================================================
+# ========================================================
+# @Author: Ryuchen
+# @Time: 2019/05/27-23:56
+# @Site: https://ryuchen.github.io
+# @Contact: chenhaom1993@hotmail.com
+# @Copyright: Copyright (C) 2019-2020 Panda-Sandbox.
+# ========================================================
+"""
+The global agent.py running on multi-platform
+
+This agent main to communication with outside result server to log malware behavior
+"""
 import os
 import re
 import sys

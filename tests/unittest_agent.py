@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# ==================================================
-# @Time : 2019-05-30 19:59
-# @Author : ryuchen
-# @File : unittest_agent.py
-# @Desc :
-# ==================================================
+# ========================================================
+# @Author: Ryuchen
+# @Time: 2019/12/05-13:24
+# @Site: https://ryuchen.github.io
+# @Contact: chenhaom1993@hotmail.com
+# @Copyright: Copyright (C) 2019-2020 Panda-Sandbox.
+# ========================================================
 """
-Using this unittest to test agent.py function
+Using this unittest to test with agent.py function
 The function below was assemble from GuestManager
 
 Running this unittest, before you should starting agent on your develop system.
