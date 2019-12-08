@@ -1,3 +1,6 @@
 [submodule "data/analyzer"]
 	path = data/analyzer
 	url = https://github.com/Ryuchen/Panda-Sandbox-Analyzer.git
+[submodule "plugins"]
+	path = plugins
+	url = https://github.com/Ryuchen/Panda-Sandbox-Plugins.git
