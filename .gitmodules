@@ -4,3 +4,6 @@
 [submodule "plugins"]
 	path = plugins
 	url = https://github.com/Ryuchen/Panda-Sandbox-Plugins.git
+[submodule "web"]
+	path = web
+	url = https://github.com/Ryuchen/Panda-Sandbox-Web.git
