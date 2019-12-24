@@ -29,7 +29,7 @@ log = logging.getLogger(__name__)
 class FakeMachine(object):
     def __init__(self):
         self.label = 'test.vm1'
-        self.addr = '127.0.0.1'
+        self.addr = '196.168.56.4'
         self.port = 8554
 
 
@@ -97,7 +97,7 @@ if __name__ == '__main__':
         status = r.json()
         version = status.get("version")
         features = status.get("features", [])
-    except:
+    except Exception:
         log.critical(
             "We were unable to detect either the Old or New Agent in the "
             "Guest VM, are you sure you have set it up correctly? Please "
@@ -115,3 +115,5 @@ if __name__ == '__main__':
     # other Virtual Machines etc.
     if "pinning" in features:
         agent_unit_test.get("/pinning")
+
+    print(features)

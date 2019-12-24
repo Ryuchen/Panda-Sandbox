@@ -1,18 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# ==================================================
-# @Time : 2019-05-31 18:06
-# @Author : ryuchen
-# @File : Machinery.py
-# @Desc :
-# ==================================================
+# ========================================================
+# @Author: Ryuchen
+# @Time: 2019/12/10-21:26
+# @Site: https://ryuchen.github.io
+# @Contact: chenhaom1993@hotmail.com
+# @Copyright: Copyright (C) 2019-2020 Panda-Sandbox.
+# ========================================================
+"""
+This function will be the basic guest machinery modules.
+
+It will be fixed with virtualbox by default, other virtualization platform should implement this.
+
+In our machine module, we wish it can manage itself, so it must have three main function here:
+
+    1. Each machine must have its own options, according to its options, it will fetch specification file type;
+    2. Each machine will be a pipeline, it will fetch & analysis & revert by itself automatically;
+    3. Each machine has its own watch dog, to take care of the healthy situation of machine,
+       in some situation, watch dog will help rebuild the machine image.
+
+Also, we will add some additional function to help us analysis file more efficiency.
+"""
 import time
 import logging
-
-from lib.common import config
-from lib.exceptions.exceptions import CuckooCriticalError
-from lib.exceptions.exceptions import CuckooMachineError
-from lib.misc import cwd
 
 log = logging.getLogger(__name__)
 
@@ -20,10 +30,8 @@ log = logging.getLogger(__name__)
 class Machinery(object):
     """Base abstract class for machinery modules."""
 
-    # Default label used in machinery configuration file to supply virtual
-    # machine name/label/vmx path. Override it if you dubbed it in another
-    # way.
-    LABEL = "label"
+    # UUID used at here to identify each machine
+    UUID = ""
 
     def __init__(self):
         self.options = None
@@ -33,9 +41,8 @@ class Machinery(object):
     def init_once(cls):
         pass
 
-    @staticmethod
-    def pcap_path(task_id):
-        """Returns the .pcap path for this task id."""
+    def pcap_path(self, task_id):
+        """Return the .pcap path for this task id."""
         return cwd("storage", "analyses", "%s" % task_id, "dump.pcap")
 
     def set_options(self, options):
@@ -97,7 +104,7 @@ class Machinery(object):
             )
 
     def _initialize_check(self):
-        """Runs checks against virtualization software when a machine manager
+        """Run checks against virtualization software when a machine manager
         is initialized.
         @note: in machine manager modules you may override or superclass
                his method.
@@ -140,7 +147,7 @@ class Machinery(object):
         return self.db.list_machines()
 
     def availables(self):
-        """How many machines are free.
+        """Return how many machines are free.
         @return: free machines count.
         """
         return self.db.count_machines_available()
@@ -166,13 +173,13 @@ class Machinery(object):
         self.db.unlock_machine(label)
 
     def running(self):
-        """Returns running virtual machines.
+        """Return running virtual machines.
         @return: running virtual machines list.
         """
         return self.db.list_machines(locked=True)
 
     def shutdown(self):
-        """Shutdown the machine manager. Kills all alive machines.
+        """Shutdown the machine manager and kill all alive machines.
         @raise CuckooMachineError: if unable to stop machine.
         """
         if len(self.running()) > 0:
@@ -208,13 +215,13 @@ class Machinery(object):
         raise NotImplementedError
 
     def _list(self):
-        """Lists virtual machines configured.
+        """List virtual machines configured.
         @raise NotImplementedError: this method is abstract.
         """
         raise NotImplementedError
 
     def dump_memory(self, label, path):
-        """Takes a memory dump of a machine.
+        """Take a memory dump of a machine.
         @param path: path to where to store the memory dump.
         """
         raise NotImplementedError
@@ -241,7 +248,7 @@ class Machinery(object):
         raise NotImplementedError
 
     def _wait_status(self, label, *states):
-        """Waits for a vm status.
+        """Wait for a vm status.
         @param label: virtual machine name.
         @param state: virtual machine status, accepts multiple states as list.
         @raise CuckooMachineError: if default waiting timeout expire.
@@ -264,3 +271,8 @@ class Machinery(object):
             time.sleep(1)
             waitme += 1
             current = self._status(label)
+
+    @staticmethod
+    def version():
+        """Return the version of the virtualization software"""
+        return None

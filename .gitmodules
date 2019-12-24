@@ -7,3 +7,6 @@
 [submodule "web"]
 	path = web
 	url = https://github.com/Ryuchen/Panda-Sandbox-Web.git
+[submodule "data/agent"]
+	path = data/agent
+	url = https://github.com/Ryuchen/Panda-Sandbox-Agent.git
